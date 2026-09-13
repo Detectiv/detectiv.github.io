@@ -1143,13 +1143,13 @@
           <span id="photoBadgeLabel">Подача на виклик • Олевськ</span>
         </div>
 
-        <!-- Головне фото автомобіля (використовує підготовлений файл golf-front.jpg) -->
+        <!-- Головне фото автомобіля напряму з папки img/ -->
         <img 
           id="carDisplayImg" 
           class="car-photo-img" 
-          src="golf-front.jpg" 
+          src="img/golf-front.jpg" 
           alt="Синій Volkswagen Golf 5 Variant таксі Борис Олевськ"
-          onerror="this.src='https://placehold.co/1200x800/172554/60a5fa?text=Golf+5+Variant+%E2%80%A2+%D0%9E%D0%BB%D0%B5%D0%B2%D1%81%D1%8C%D0%BA'"
+          onerror="handleImgFallback(this)"
         >
 
         <!-- Затемнення фонових недоліків фотографії -->
@@ -1366,24 +1366,60 @@
         badge: "Подача на виклик • Олевськ",
         title: "🚖 Подача авто до вашого місця",
         desc: "Синій Golf V — здалеку видно біля вокзалу, ринку чи лікарні",
-        url: "golf-front.jpg",
+        file: "golf-front.jpg",
         fallback: "https://placehold.co/1200x800/172554/60a5fa?text=Golf+5+Variant+%E2%80%A2+%D0%9F%D0%BE%D0%B4%D0%B0%D1%87%D0%B0+%D0%B0%D0%B2%D1%82%D0%BE"
       },
       {
         badge: "Комфорт у дорозі • Громада та міжмісто",
         title: "🛣️ Спокійна поїздка по місту та селах",
         desc: "М'який хід по сільських дорогах, чистий салон та кондиціонер у спеку",
-        url: "golf-side.jpg",
+        file: "golf-side.jpg",
         fallback: "https://placehold.co/1200x800/0f172a/38bdf8?text=%D0%A1%D0%B8%D0%BD%D1%96%D0%B9+%D1%83%D0%BD%D1%96%D0%B2%D0%B5%D1%80%D1%81%D0%B0%D0%BB+%E2%80%A2+%D0%9F%D0%BE%D1%97%D0%B7%D0%B4%D0%BA%D0%B0"
       },
       {
         badge: "Місткий універсал • Валізи та ринок",
         title: "🧳 Багажник для валіз, сумок та закупок",
         desc: "Помістяться всі сумки з київського потяга або важкі покупки з базару",
-        url: "golf-trunk.jpg",
+        file: "golf-trunk.jpg",
         fallback: "https://placehold.co/1200x800/1e1b4b/818cf8?text=%D0%92%D0%B5%D0%BB%D0%B8%D0%BA%D0%B8%D0%B9+%D0%B1%D0%B0%D0%B3%D0%B0%D0%B6%D0%BD%D0%B8%D0%BA+%D0%B4%D0%BB%D1%8F+%D1%81%D1%83%D0%BC%D0%BE%D0%BA"
       }
     ];
+
+    /* Сканування фотографій безпосередньо в папці img/ та корені */
+    const PATH_CANDIDATES = ['img/', './img/', '', 'images/'];
+    let detectedPrefix = null;
+
+    function applyCarImage(imgElement, filename, fallbackUrl) {
+      if (detectedPrefix !== null) {
+        imgElement.src = detectedPrefix + filename;
+        imgElement.onerror = () => { imgElement.src = fallbackUrl; };
+        return;
+      }
+
+      let step = 0;
+      function tryNextCandidate() {
+        if (step < PATH_CANDIDATES.length) {
+          const prefix = PATH_CANDIDATES[step++];
+          const candidateSrc = prefix + filename;
+          const tester = new Image();
+          tester.onload = () => {
+            detectedPrefix = prefix;
+            imgElement.src = candidateSrc;
+          };
+          tester.onerror = tryNextCandidate;
+          tester.src = candidateSrc;
+        } else {
+          imgElement.src = fallbackUrl;
+        }
+      }
+      tryNextCandidate();
+    }
+
+    function handleImgFallback(imgElement) {
+      if (!detectedPrefix) {
+        applyCarImage(imgElement, CAR_PHOTOS[currentPhotoIdx].file, CAR_PHOTOS[currentPhotoIdx].fallback);
+      }
+    }
 
     let currentPhotoIdx = 0;
     let autoSlideTimer = null;
@@ -1402,10 +1438,7 @@
 
       setTimeout(() => {
         const item = CAR_PHOTOS[index];
-        img.onerror = () => {
-          img.src = item.fallback;
-        };
-        img.src = item.url;
+        applyCarImage(img, item.file, item.fallback);
         if (label) label.innerText = item.badge;
         if (captionText) {
           captionText.innerHTML = `${item.title}<span>${item.desc}</span>`;
@@ -1421,6 +1454,12 @@
           else btn.classList.remove('active');
         }
       });
+    }
+
+    /* Запуск автопідбору для першого кадру */
+    const initialImg = document.getElementById('carDisplayImg');
+    if (initialImg) {
+      applyCarImage(initialImg, CAR_PHOTOS[0].file, CAR_PHOTOS[0].fallback);
     }
 
     function startAutoSlide() {
