@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Таксі Борис | Олевськ — Volkswagen Golf V</title>
+  <title>Таксі Борис | Олевськ — Volkswagen Golf 5</title>
   <!-- Базові мета-теги для пошукових систем -->
-  <meta name="description" content="Швидке та надійне таксі в Олевську та районі. Комфортний універсал Volkswagen Golf V Variant, подача на вокзал, автостанцію, лікарню, села громади та міжмісто.">
+  <meta name="description" content="Швидке та надійне таксі в Олевську та районі. Комфортний універсал Volkswagen Golf 5 Variant, подача на вокзал, автостанцію, лікарню, села громади та міжмісто.">
   <meta name="keywords" content="таксі олевськ, такси олевск, таксі борис олевськ, замовити таксі олевськ, номер таксі олевськ, таксі олевськ ціни, таксі вокзал олевськ">
   <meta name="robots" content="index, follow">
   <meta name="geo.region" content="UA-18">
   <meta name="geo.placename" content="Олевськ">
 
   <!-- Open Graph для привабливих прев'ю при надсиланні у Viber, Telegram та Facebook -->
-  <meta property="og:title" content="Таксі Борис | Олевськ — Volkswagen Golf V Variant">
+  <meta property="og:title" content="Таксі Борис | Олевськ — Volkswagen Golf 5 Variant">
   <meta property="og:description" content="Поїздки по Олевську та району. Великий багажник, чистий салон, помірні тарифи.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="uk_UA">
@@ -702,6 +702,35 @@
       color: #080c16;
     }
 
+    /* Модальне вікно введення ПІН-коду адміна */
+    .pin-input-group {
+      display: flex;
+      gap: 8px;
+      margin: 18px 0;
+    }
+    .pin-input-field {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #f8fafc;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: 4px;
+      outline: none;
+    }
+    .pin-input-field:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+    .pin-error-text {
+      color: #f87171;
+      font-size: 0.78rem;
+      margin-bottom: 12px;
+      display: none;
+    }
+
     /* Тост повідомлення */
     .toast-box {
       position: fixed;
@@ -800,13 +829,13 @@
 
   <main class="hero">
     <div class="hero-tag">Міські та міжміські поїздки</div>
-    <h1>Комфортний <span>Golf V Variant</span></h1>
+    <h1>Комфортний <span>Golf 5 Variant</span></h1>
     <p>Швидко, надійно та з чистим салоном по всьому Олевську та району.</p>
 
     <!-- 3D Модель автомобіля (плавно обертається сама, не блокує екран) -->
     <div class="canvas-container">
       <canvas id="carCanvas"></canvas>
-      <div class="canvas-hint">✨ Синій Volkswagen Golf V Variant ✨</div>
+      <div class="canvas-hint">✨ Синій Volkswagen Golf 5 Variant ✨</div>
     </div>
 
     <!-- Блок контактів водія: показано, що контакти є, але на час відпустки заблоковані -->
@@ -945,6 +974,29 @@
       <button class="copy-pill" style="width: 100%; padding: 12px; font-size: 0.88rem; border-radius: 12px;" onclick="closeDevModal()">
         Зрозуміло, дякую!
       </button>
+    </div>
+  </div>
+
+  <!-- Модальне вікно входу в адмінку з ПІН-кодом -->
+  <div class="modal-backdrop" id="adminPinModal" onclick="handlePinBackdrop(event)">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAdminPinModal()">✕</button>
+      <h2>Вхід для адміністратора</h2>
+      <p>Введіть секретний ПІН-код водія для перемикання режиму роботи на всіх пристроях:</p>
+      
+      <div class="pin-input-group">
+        <input type="password" id="adminPinInput" class="pin-input-field" maxlength="6" placeholder="••••" autocomplete="off" onkeydown="if(event.key==='Enter') verifyAdminPin()">
+      </div>
+      <div class="pin-error-text" id="pinError">Невірний ПІН-код. Спробуйте ще раз.</div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="copy-pill" style="flex: 1; padding: 12px; font-size: 0.88rem; border-radius: 12px; background: rgba(255,255,255,0.05); color: #94a3b8; border-color: rgba(255,255,255,0.1);" onclick="closeAdminPinModal()">
+          Скасувати
+        </button>
+        <button class="copy-pill" style="flex: 1; padding: 12px; font-size: 0.88rem; border-radius: 12px;" onclick="verifyAdminPin()">
+          Підтвердити
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1261,6 +1313,50 @@
       if (e.target.id === 'devModal') closeDevModal();
     }
 
+    /* Модальне вікно ПІН-коду для перемикання статусу */
+    const ADMIN_SECRET_PIN = "7788"; // Стандартний ПІН-код
+
+    function openAdminPinModal() {
+      const modal = document.getElementById('adminPinModal');
+      const input = document.getElementById('adminPinInput');
+      const err = document.getElementById('pinError');
+      if (err) err.style.display = 'none';
+      if (input) input.value = '';
+      if (modal) modal.classList.add('active');
+      setTimeout(() => { if (input) input.focus(); }, 150);
+    }
+
+    function closeAdminPinModal() {
+      const modal = document.getElementById('adminPinModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function handlePinBackdrop(e) {
+      if (e.target.id === 'adminPinModal') closeAdminPinModal();
+    }
+
+    function verifyAdminPin() {
+      const input = document.getElementById('adminPinInput');
+      const err = document.getElementById('pinError');
+      if (input && input.value === ADMIN_SECRET_PIN) {
+        closeAdminPinModal();
+        // Якщо підключений хмарний статус через Firebase
+        if (window.cloudToggleVacation) {
+          window.cloudToggleVacation();
+        } else {
+          toggleVacationMode();
+        }
+      } else {
+        if (err) err.style.display = 'block';
+        if (input) input.select();
+      }
+    }
+
+    // Перевизначаємо клік по кнопці адміна, щоб вимагати ПІН-код
+    document.getElementById('toggleRibbonBtn').onclick = function() {
+      openAdminPinModal();
+    };
+
     function copyToClipboard(text, successMsg) {
       const temp = document.createElement('input');
       temp.value = text;
@@ -1280,6 +1376,88 @@
       toastTimer = setTimeout(() => {
         box.classList.remove('show');
       }, 2600);
+    }
+  </script>
+
+  <!-- Модуль хмарної синхронізації Firebase Firestore в реальному часі -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Ідентифікатор проєкту та конфігурація
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'taxi-boris';
+    
+    // Ваша реальна робоча конфігурація Firebase Console
+    const fallbackFirebaseConfig = {
+      apiKey: "AIzaSyAj2Mr6uQI-RvD2kQ0z77SKtvjQgqcPEYc",
+      authDomain: "taxi-boris.firebaseapp.com",
+      projectId: "taxi-boris",
+      storageBucket: "taxi-boris.firebasestorage.app",
+      messagingSenderId: "90986195173",
+      appId: "1:90986195173:web:4e53107c982af478020c0c",
+      measurementId: "G-DQBN7FBE09"
+    };
+
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+      ? JSON.parse(__firebase_config) 
+      : fallbackFirebaseConfig;
+
+    // Перевірка наявності робочої конфігурації
+    if (firebaseConfig && firebaseConfig.projectId && firebaseConfig.apiKey) {
+      try {
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // 1. Авторизація перед виконанням запитів (Правило 3)
+        let currentUser = null;
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+        currentUser = auth.currentUser;
+
+        if (currentUser) {
+          // Шлях відповідно до суворих правил безпеки (Правило 1)
+          const statusDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'taxi_settings', 'status_doc');
+
+          // Слухаємо стан бази в реальному часі (якщо ви зміните статус — у всіх клієнтів стрічка зникне без перезавантаження)
+          onSnapshot(statusDocRef, (docSnap) => {
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              if (typeof data.isVacation === 'boolean') {
+                isVacation = data.isVacation;
+                applyVacationState();
+              }
+            }
+          }, (error) => {
+            console.warn("Помилка синхронізації Firestore:", error);
+          });
+
+          // Глобальна функція оновлення стану для адміна після перевірки ПІН-коду
+          window.cloudToggleVacation = async function() {
+            try {
+              const nextState = !isVacation;
+              await setDoc(statusDocRef, { 
+                isVacation: nextState,
+                updatedAt: new Date().toISOString()
+              }, { merge: true });
+              
+              showToast(nextState 
+                ? '🌴 Хмара: Режим відпустки увімкнено для всіх' 
+                : '✅ Хмара: Борис на лінії! Номер відкрито для всіх');
+            } catch (err) {
+              console.error("Не вдалося оновити статус у хмарі:", err);
+              // Локальний фолбек, якщо зв'язок втрачено
+              toggleVacationMode();
+            }
+          };
+        }
+      } catch (e) {
+        console.warn("Хмарний модуль працює в автономному режимі:", e);
+      }
     }
   </script>
 </body>
