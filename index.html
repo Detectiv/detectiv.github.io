@@ -108,14 +108,22 @@
       color: #090d16;
     }
 
-    /* 2. Акуратна діагональна стрічка відпустки (не перекриває контент намертво) */
+    /* 2. Апаратне прискорення стрічки відпустки (повністю усуває смикання при скролі) */
     .vacation-ribbon-wrapper {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh; /* Враховує динамічну панель браузера */
       pointer-events: none;
-      z-index: 80; /* Тепер стрічка йде поверх авто та заголовка на передньому плані */
+      z-index: 80;
       overflow: hidden;
       transition: opacity 0.35s ease;
+      contain: strict;
+      transform: translate3d(0, 0, 0);
+      -webkit-transform: translate3d(0, 0, 0);
+      will-change: opacity;
     }
     .vacation-ribbon-wrapper.hidden {
       opacity: 0;
@@ -123,10 +131,11 @@
     }
     .vacation-ribbon {
       position: absolute;
-      width: 250vw;
-      left: -75vw;
-      top: 50%;
-      transform: translateY(-50%) rotate(-32deg);
+      width: 260vw;
+      left: -80vw;
+      top: 48%;
+      transform: translateY(-50%) rotate(-30deg) translate3d(0, 0, 0);
+      -webkit-transform: translateY(-50%) rotate(-30deg) translate3d(0, 0, 0);
       background: repeating-linear-gradient(
         -45deg,
         #facc15,
@@ -141,10 +150,18 @@
       display: flex;
       white-space: nowrap;
       opacity: 0.94;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      will-change: transform;
     }
     .ribbon-track {
       display: flex;
       animation: ribbonScroll 16s linear infinite;
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
+      -webkit-transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
     .ribbon-item {
       font-size: 1.05rem;
@@ -158,12 +175,13 @@
       gap: 12px;
     }
     @keyframes ribbonScroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
     }
 
+    /* Адаптивний та гармонійний хедер */
     header {
-      padding: 18px 24px;
+      padding: 14px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -172,50 +190,60 @@
       width: 100%;
       position: relative;
       z-index: 50;
+      gap: 12px;
     }
     .logo {
       font-weight: 900;
-      font-size: 1.25rem;
-      display: flex;
+      font-size: 1.15rem;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
       text-decoration: none;
       color: inherit;
       cursor: pointer;
       user-select: none;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      letter-spacing: -0.3px;
     }
     .logo-badge {
-      background: var(--accent-blue);
-      color: white;
-      padding: 2px 8px;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      padding: 2px 7px;
       border-radius: 6px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 800;
+      letter-spacing: 0.5px;
     }
     .status-pill {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
       color: #fca5a5;
-      padding: 6px 14px;
-      border-radius: 30px;
-      font-size: 0.82rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
       font-weight: 700;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
+      flex-shrink: 0;
       transition: all 0.3s ease;
+      white-space: nowrap;
     }
     .status-pill.online {
-      background: rgba(34, 197, 94, 0.15);
-      border-color: rgba(34, 197, 94, 0.4);
-      color: #4ade80;
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: #86efac;
     }
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #ef4444;
       display: inline-block;
+      flex-shrink: 0;
       transition: background 0.3s ease;
     }
     .status-pill.online .status-dot {
@@ -781,10 +809,165 @@
       .ribbon-item {
         font-size: 0.92rem;
       }
+      header {
+        padding: 10px 14px;
+        gap: 8px;
+      }
+      .logo {
+        font-size: 1.02rem;
+        gap: 6px;
+      }
+      .logo-badge {
+        font-size: 0.68rem;
+        padding: 2px 6px;
+      }
+      .status-pill {
+        padding: 4px 10px;
+        font-size: 0.74rem;
+        gap: 6px;
+      }
+    }
+
+    /* Тонка неонова смужка прогресу скролу на самому верху */
+    .scroll-progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2.5px;
+      background: linear-gradient(90deg, #2563eb, #38bdf8);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+      width: 0%;
+      z-index: 200;
+      transition: width 0.08s ease-out;
+      pointer-events: none;
+    }
+
+    /* Вертикальні крапки навігації по блоках праворуч */
+    .section-nav-dots {
+      position: fixed;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 8px 5px;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .nav-dot {
+      position: relative;
+      width: 7px;
+      height: 7px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: block;
+      padding: 0;
+      border: none;
+      outline: none;
+    }
+    .nav-dot:hover {
+      background: rgba(255, 255, 255, 0.75);
+    }
+    .nav-dot.active {
+      height: 20px;
+      background: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
+    }
+    .nav-dot .dot-tooltip {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%) translateX(6px);
+      background: #0f172a;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #f8fafc;
+      padding: 4px 9px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    }
+    .nav-dot:hover .dot-tooltip {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    /* Підказка швидкого переходу до тарифів під контактами */
+    .scroll-down-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      padding: 8px 18px;
+      background: rgba(30, 41, 59, 0.45);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 24px;
+      color: #cbd5e1;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .scroll-down-hint:hover {
+      background: rgba(37, 99, 235, 0.2);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      transform: translateY(2px);
+    }
+    .scroll-arrow {
+      font-size: 0.95rem;
+      color: #38bdf8;
+      font-weight: 900;
+      animation: gentleBounce 1.8s ease-in-out infinite;
+    }
+    @keyframes gentleBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+
+    @media (max-width: 768px) {
+      .section-nav-dots {
+        right: 8px;
+        padding: 6px 3.5px;
+        gap: 8px;
+      }
+      .nav-dot .dot-tooltip {
+        display: none; /* Приховуємо на смартфонах, щоб не перекривати екран */
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- Індикатор прогресу скролу (тонка лінія зверху) -->
+  <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+
+  <!-- Вертикальні смарт-крапки навігації праворуч -->
+  <nav class="section-nav-dots" aria-label="Розділи сайту">
+    <button class="nav-dot active" id="dot-hero" onclick="scrollToSection(event, 'hero')" aria-label="Авто та контакти">
+      <span class="dot-tooltip">🚗 Авто & Контакти</span>
+    </button>
+    <button class="nav-dot" id="dot-features" onclick="scrollToSection(event, 'features')" aria-label="Переваги універсала">
+      <span class="dot-tooltip">✨ Переваги авто</span>
+    </button>
+    <button class="nav-dot" id="dot-pricing" onclick="scrollToSection(event, 'pricing')" aria-label="Тарифи та села">
+      <span class="dot-tooltip">💰 Тарифи та ціни</span>
+    </button>
+  </nav>
 
   <!-- 1. Верхній промо-бар розробника -->
   <div class="dev-banner">
@@ -823,7 +1006,7 @@
   <!-- Шапка сайту (клік по логотипу 3 рази відкриває режим адміна) -->
   <header>
     <div class="logo" onclick="handleLogoSecretClick()" title="Клацніть тричі для панелі керування">
-      <span>ТАКСІ БОРИС</span>
+      <span class="logo-text">ТАКСІ БОРИС</span>
       <span class="logo-badge">ОЛЕВСЬК</span>
     </div>
     <div class="status-pill" id="statusPill">
@@ -832,7 +1015,7 @@
     </div>
   </header>
 
-  <main class="hero">
+  <main class="hero" id="hero">
     <div class="hero-tag">Міські та міжміські поїздки</div>
     <h1>Комфортний <span>Golf 5 Variant</span></h1>
     <p>Швидко, надійно та з чистим салоном по всьому Олевську та району.</p>
@@ -876,10 +1059,16 @@
         </div>
       </div>
 
+      <!-- Підказка переходу до тарифів, що ліквідує ілюзію порожнього низу -->
+      <a class="scroll-down-hint" href="#pricing" onclick="scrollToSection(event, 'pricing')">
+        <span>Орієнтовні тарифи та села</span>
+        <span class="scroll-arrow">↓</span>
+      </a>
+
     </div>
   </main>
 
-  <section class="features">
+  <section class="features" id="features">
     <div class="feature-card">
       <div class="feature-icon">🚙</div>
       <h3>Volkswagen Golf 5 Variant</h3>
@@ -898,7 +1087,7 @@
   </section>
 
   <!-- Секція орієнтовних тарифів по Олевську та району -->
-  <section class="pricing-section">
+  <section class="pricing-section" id="pricing">
     <div class="section-title-wrap">
       <div class="section-badge">Прозорі ціни</div>
       <h3 class="section-title">Орієнтовні тарифи та маршрути</h3>
@@ -949,10 +1138,6 @@
           <li>Олевськ — Житомир / Київ</li>
         </ul>
       </div>
-    </div>
-
-    <div class="pricing-note">
-      💼 <strong>Бонус універсала:</strong> Перевезення стандартного багажу, сумок чи передач у багажнику на 505–1495 л — без доплат.
     </div>
   </section>
 
@@ -1017,12 +1202,16 @@
   </footer>
 
   <script>
+    /* Головні налаштування контактів водія (змініть тут за потреби) */
+    const DRIVER_PHONE_RAW = '+380970000000';
+    const DRIVER_PHONE_FORMATTED = '+38 (097) 000-00-00';
+
     /* Сцена Three.js */
     const canvas = document.getElementById('carCanvas');
     const container = canvas.parentElement;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, container.clientWidth / container.clientHeight, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(38, Math.max(container.clientWidth, 300) / Math.max(container.clientHeight, 200), 0.1, 100);
     camera.position.set(4.6, 2.2, 4.6);
     camera.lookAt(0, 0.45, 0);
 
@@ -1153,18 +1342,25 @@
 
     scene.add(carGroup);
 
-    // Плавний цикл обертання автомобіля
+    // Плавний цикл обертання автомобіля з оптимізацією батареї
+    let isAppVisible = true;
+    document.addEventListener('visibilitychange', () => {
+      isAppVisible = !document.hidden;
+    });
+
     function animate() {
       requestAnimationFrame(animate);
-      carGroup.rotation.y += 0.01;
-      renderer.render(scene, camera);
+      if (isAppVisible) {
+        carGroup.rotation.y += 0.01;
+        renderer.render(scene, camera);
+      }
     }
     animate();
 
-    // Ресайз вікна
+    // Надійний ресайз вікна з перевіркою розмірів
     window.addEventListener('resize', () => {
-      const w = container.clientWidth;
-      const h = container.clientHeight;
+      const w = container.clientWidth || 300;
+      const h = container.clientHeight || 200;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
@@ -1278,14 +1474,14 @@
         contactsHeader.innerHTML = '<span>📞 Прямий звʼязок для замовлення:</span>';
 
         phoneCard.className = 'contact-card unlocked';
-        phoneCard.href = 'tel:+380970000000';
+        phoneCard.href = 'tel:' + DRIVER_PHONE_RAW;
         phoneCard.onclick = () => showToast('Здійснюємо дзвінок водію...');
-        phoneText.innerText = '+38 (097) 000-00-00';
+        phoneText.innerText = DRIVER_PHONE_FORMATTED;
         phoneBadge.className = 'contact-badge badge-unlocked';
         phoneBadge.innerText = '🟢 Зателефонувати';
 
         viberCard.className = 'contact-card unlocked';
-        viberCard.href = 'viber://chat?number=%2B380970000000';
+        viberCard.href = 'viber://chat?number=' + encodeURIComponent(DRIVER_PHONE_RAW);
         viberCard.onclick = () => showToast('Відкриваємо чат у Viber...');
         viberText.innerText = 'Написати у Viber';
         viberBadge.className = 'contact-badge badge-unlocked';
@@ -1359,6 +1555,60 @@
       openAdminPinModal();
     };
 
+    /* Плавний скрол до блоку та відстеження активного розділу */
+    function scrollToSection(e, targetId) {
+      if (e) e.preventDefault();
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    const navSections = [
+      { id: 'hero', dotId: 'dot-hero' },
+      { id: 'features', dotId: 'dot-features' },
+      { id: 'pricing', dotId: 'dot-pricing' }
+    ];
+
+    function handlePageScroll() {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const totalScrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const progressPercent = totalScrollable > 0 ? (scrollY / totalScrollable) * 100 : 0;
+
+      // Оновлення неонової лінії вгорі
+      const progressBar = document.getElementById('scrollProgressBar');
+      if (progressBar) {
+        progressBar.style.width = Math.min(100, Math.max(0, progressPercent)) + '%';
+      }
+
+      // Визначення поточного видимого блоку (тригер на 38% висоти вікна)
+      const triggerY = scrollY + window.innerHeight * 0.38;
+      let currentSectionId = navSections[0].id;
+
+      navSections.forEach(sec => {
+        const el = document.getElementById(sec.id);
+        if (el && el.offsetTop <= triggerY) {
+          currentSectionId = sec.id;
+        }
+      });
+
+      // Перемикання капсул-крапок
+      navSections.forEach(sec => {
+        const dot = document.getElementById(sec.dotId);
+        if (dot) {
+          if (sec.id === currentSectionId) {
+            dot.classList.add('active');
+          } else {
+            dot.classList.remove('active');
+          }
+        }
+      });
+    }
+
+    window.addEventListener('scroll', handlePageScroll, { passive: true });
+    window.addEventListener('resize', handlePageScroll, { passive: true });
+    setTimeout(handlePageScroll, 150);
+
     function copyToClipboard(text, successMsg) {
       const temp = document.createElement('input');
       temp.value = text;
@@ -1384,7 +1634,7 @@
   <!-- Модуль хмарної синхронізації Firebase Firestore в реальному часі -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'taxi-boris';
@@ -1411,7 +1661,7 @@
 
         const statusDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'taxi_settings', 'status_doc');
 
-        // Читання статусу в реальному часі
+        // Читання статусу в реальному часі без жодної авторизації відвідувачів
         onSnapshot(statusDocRef, (docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data();
@@ -1424,14 +1674,14 @@
           console.warn("Слухач Firestore:", error);
         });
 
-        // Серверна авторизація з детальною діагностикою помилок
+        // Серверна авторизація виключно для адміністратора
         window.cloudToggleVacationWithPassword = async function(password) {
           const err = document.getElementById('pinError');
           const input = document.getElementById('adminPinInput');
           const btn = document.getElementById('adminSubmitBtn');
 
           try {
-            // Спроба входу під акаунтом водія
+            // Вхід за поштою та паролем водія
             await signInWithEmailAndPassword(auth, "admin@taxiboris.ua", password);
             
             const nextState = !isVacation;
@@ -1472,8 +1722,6 @@
             }
           }
         };
-
-        signInAnonymously(auth).catch(() => {});
       } catch (e) {
         console.warn("Хмарний модуль працює в автономному режимі:", e);
       }
