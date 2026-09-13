@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Таксі Борис | Олевськ — Volkswagen Golf V</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Three.js CDN для надійного 3D-рендерингу -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 24, 40, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-blue: #2563eb;
+      --golf-blue: #1d4ed8;
+      --warning-yellow: #facc15;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      overflow-x: hidden;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* 1. Верхній промо-бар розробника */
+    .dev-banner {
+      background: linear-gradient(90deg, #1e1b4b, #2e2874, #1e1b4b);
+      color: #e0e7ff;
+      padding: 8px 16px;
+      font-size: 0.82rem;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      z-index: 100;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.35);
+    }
+    .dev-banner button {
+      color: #38bdf8;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 3px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      transition: all 0.2s ease;
+    }
+    .dev-banner button:hover {
+      background: #38bdf8;
+      color: #090d16;
+    }
+
+    /* 2. Акуратна діагональна стрічка відпустки (не перекриває контент намертво) */
+    .vacation-ribbon-wrapper {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 80; /* Тепер стрічка йде поверх авто та заголовка на передньому плані */
+      overflow: hidden;
+      transition: opacity 0.35s ease;
+    }
+    .vacation-ribbon-wrapper.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .vacation-ribbon {
+      position: absolute;
+      width: 250vw;
+      left: -75vw;
+      top: 50%;
+      transform: translateY(-50%) rotate(-32deg);
+      background: repeating-linear-gradient(
+        -45deg,
+        #facc15,
+        #facc15 28px,
+        #eab308 28px,
+        #eab308 56px
+      );
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), 0 0 25px rgba(234, 179, 8, 0.3);
+      padding: 10px 0;
+      border-top: 3px solid #18181b;
+      border-bottom: 3px solid #18181b;
+      display: flex;
+      white-space: nowrap;
+      opacity: 0.94;
+    }
+    .ribbon-track {
+      display: flex;
+      animation: ribbonScroll 16s linear infinite;
+    }
+    .ribbon-item {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #09090b;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 0 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+    @keyframes ribbonScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    header {
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 50;
+    }
+    .logo {
+      font-weight: 900;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      user-select: none;
+    }
+    .logo-badge {
+      background: var(--accent-blue);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+    .status-pill {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    .status-pill.online {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: rgba(34, 197, 94, 0.4);
+      color: #4ade80;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      display: inline-block;
+      transition: background 0.3s ease;
+    }
+    .status-pill.online .status-dot {
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    /* Адмін-перемикач відпустки в кутку (прихований за замовчуванням від звичайних клієнтів) */
+    .admin-pill-btn {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(250, 204, 21, 0.6);
+      color: #facc15;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 8px 16px;
+      border-radius: 24px;
+      cursor: pointer;
+      display: none; /* Приховано від випадкових відвідувачів */
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+    .admin-pill-btn.visible {
+      display: inline-flex;
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .admin-pill-btn:hover {
+      background: #facc15;
+      color: #090d16;
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 15px 24px 45px;
+      text-align: center;
+      width: 100%;
+      position: relative;
+      z-index: 50;
+    }
+    .hero-tag {
+      color: #60a5fa;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+    .hero h1 {
+      font-size: clamp(1.9rem, 4.5vw, 3.2rem);
+      font-weight: 900;
+      margin-bottom: 10px;
+      line-height: 1.18;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, #60a5fa, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.02rem;
+      max-width: 620px;
+      margin: 0 auto 24px;
+    }
+
+    /* 3D Сцена Three.js (не блокує скрол сторінки) */
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      max-width: 820px;
+      height: 390px;
+      margin: 0 auto;
+      background: radial-gradient(circle at center, rgba(37, 99, 235, 0.18) 0%, rgba(9, 13, 22, 0.7) 75%);
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+      touch-action: pan-y;
+    }
+    #carCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .canvas-hint {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(9, 13, 22, 0.8);
+      backdrop-filter: blur(8px);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .cta-container {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .status-notice {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(234, 179, 8, 0.12);
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      color: #fde047;
+      padding: 7px 18px;
+      border-radius: 24px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .status-notice.active {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: #86efac;
+    }
+
+    /* Контейнер контактів водія */
+    .contacts-wrapper {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 20px 24px;
+      max-width: 580px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .contacts-header {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .contacts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    /* Картка контакту: маскована або активна */
+    .contact-card {
+      background: rgba(30, 41, 59, 0.55);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-card.locked {
+      cursor: not-allowed;
+      border-color: rgba(239, 68, 68, 0.25);
+      background: rgba(30, 41, 59, 0.4);
+    }
+    .contact-card.unlocked {
+      cursor: pointer;
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(30, 41, 59, 0.8);
+    }
+    .contact-card.unlocked:hover {
+      border-color: #38bdf8;
+      background: rgba(37, 99, 235, 0.2);
+      transform: translateY(-2px);
+    }
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    .contact-type {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .contact-value {
+      font-family: 'Inter', monospace, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #f1f5f9;
+      letter-spacing: 0.5px;
+    }
+    .contact-badge {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-locked {
+      background: rgba(239, 68, 68, 0.18);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+    .badge-unlocked {
+      background: rgba(34, 197, 94, 0.18);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .features {
+      max-width: 1100px;
+      margin: 25px auto 60px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      width: 100%;
+      position: relative;
+      z-index: 50;
+    }
+    .feature-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      padding: 24px;
+      border-radius: 18px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    .feature-card h3 {
+      font-size: 1.18rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    /* Секція тарифів та цін по Олевську */
+    .pricing-section {
+      max-width: 1100px;
+      margin: 10px auto 60px;
+      padding: 0 24px;
+      width: 100%;
+      position: relative;
+      z-index: 50;
+    }
+    .section-title-wrap {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .section-badge {
+      display: inline-block;
+      color: #38bdf8;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 900;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    .price-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .price-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .price-card.popular {
+      border-color: rgba(37, 99, 235, 0.5);
+      background: linear-gradient(180deg, rgba(29, 78, 216, 0.12) 0%, rgba(18, 24, 40, 0.8) 100%);
+    }
+    .price-badge {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: var(--accent-blue);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+    .price-header h4 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #f1f5f9;
+    }
+    .price-value {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #38bdf8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .price-value span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .price-routes {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.86rem;
+      color: #cbd5e1;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      padding-top: 14px;
+    }
+    .price-routes li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .price-routes li::before {
+      content: "✓";
+      color: #38bdf8;
+      font-weight: 900;
+    }
+    .pricing-note {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: #0f172a;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 440px;
+      padding: 28px 24px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.85);
+      position: relative;
+      transform: scale(0.95);
+      transition: transform 0.25s ease;
+    }
+    .modal-backdrop.active .modal-card {
+      transform: scale(1);
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #94a3b8;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .modal-close:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+    .modal-card h2 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .modal-card p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      margin-bottom: 20px;
+    }
+    .contact-row {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .contact-val {
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    .copy-pill {
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .copy-pill:hover {
+      background: #38bdf8;
+      color: #080c16;
+    }
+
+    /* Тост повідомлення */
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(50px);
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      color: #f8fafc;
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 3000;
+    }
+    .toast-box.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--card-border);
+      padding: 30px 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      position: relative;
+      z-index: 50;
+    }
+
+    @media (max-width: 768px) {
+      .canvas-container {
+        height: 300px;
+      }
+      .vacation-ribbon {
+        padding: 8px 0;
+      }
+      .ribbon-item {
+        font-size: 0.92rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Верхній промо-бар розробника -->
+  <div class="dev-banner">
+    <span>✨ Потрібен якісний сайт для вашої справи?</span>
+    <button onclick="openDevModal()">Замовити сайт у розробника →</button>
+  </div>
+
+  <!-- 2. Діагональна анімована стрічка відпустки (pointer-events: none, скрол вільний) -->
+  <div class="vacation-ribbon-wrapper" id="vacationRibbon">
+    <div class="vacation-ribbon">
+      <div class="ribbon-track">
+        <span class="ribbon-item">🌴 БОРИС У ВІДПУСТЦІ</span>
+        <span class="ribbon-item">⚠️ ЗАМОВЛЕННЯ ПРИЗУПИНЕНО</span>
+        <span class="ribbon-item">📍 ОЛЕВСЬК ТА РАЙОН</span>
+        <span class="ribbon-item">🌴 БОРИС У ВІДПУСТЦІ</span>
+        <span class="ribbon-item">⚠️ ЗАМОВЛЕННЯ ПРИЗУПИНЕНО</span>
+        <span class="ribbon-item">📍 ОЛЕВСЬК ТА РАЙОН</span>
+      </div>
+      <div class="ribbon-track">
+        <span class="ribbon-item">🌴 БОРИС У ВІДПУСТЦІ</span>
+        <span class="ribbon-item">⚠️ ЗАМОВЛЕННЯ ПРИЗУПИНЕНО</span>
+        <span class="ribbon-item">📍 ОЛЕВСЬК ТА РАЙОН</span>
+        <span class="ribbon-item">🌴 БОРИС У ВІДПУСТЦІ</span>
+        <span class="ribbon-item">⚠️ ЗАМОВЛЕННЯ ПРИЗУПИНЕНО</span>
+        <span class="ribbon-item">📍 ОЛЕВСЬК ТА РАЙОН</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Кнопка адміна для перемикання режиму відпустки -->
+  <button class="admin-pill-btn" id="toggleRibbonBtn" onclick="toggleVacationMode()">
+    <span id="toggleRibbonIcon">⚙️</span>
+    <span id="toggleRibbonText">Адмін: Вимкнути відпустку</span>
+  </button>
+
+  <!-- Шапка сайту (клік по логотипу 3 рази відкриває режим адміна) -->
+  <header>
+    <div class="logo" onclick="handleLogoSecretClick()" title="Клацніть тричі для панелі керування">
+      <span>ТАКСІ БОРИС</span>
+      <span class="logo-badge">ОЛЕВСЬК</span>
+    </div>
+    <div class="status-pill" id="statusPill">
+      <span class="status-dot"></span>
+      <span id="statusPillText">У відпустці</span>
+    </div>
+  </header>
+
+  <main class="hero">
+    <div class="hero-tag">Міські та міжміські поїздки</div>
+    <h1>Комфортний <span>Golf V Variant</span></h1>
+    <p>Швидко, надійно та з чистим салоном по всьому Олевську та району.</p>
+
+    <!-- 3D Модель автомобіля (плавно обертається сама, не блокує екран) -->
+    <div class="canvas-container">
+      <canvas id="carCanvas"></canvas>
+      <div class="canvas-hint">✨ Синій Volkswagen Golf V Variant ✨</div>
+    </div>
+
+    <!-- Блок контактів водія: показано, що контакти є, але на час відпустки заблоковані -->
+    <div class="cta-container">
+      
+      <div class="status-notice" id="statusNotice">
+        🔒 Прийом замовлень призупинено на період відпустки водія
+      </div>
+
+      <div class="contacts-wrapper">
+        <div class="contacts-header" id="contactsHeader">
+          <span>📋 Контакти водія (приховані на час відпустки):</span>
+        </div>
+
+        <div class="contacts-grid">
+          <!-- Телефон (маскований або клікабельний) -->
+          <a class="contact-card locked" id="phoneCard" href="javascript:void(0)" onclick="handleLockedClick()">
+            <div class="contact-info">
+              <span class="contact-type">Мобільний телефон</span>
+              <span class="contact-value" id="phoneText">+38 (097) •••-••-••</span>
+            </div>
+            <span class="contact-badge badge-locked" id="phoneBadge">🔒 Заблоковано</span>
+          </a>
+
+          <!-- Viber (маскований або клікабельний) -->
+          <a class="contact-card locked" id="viberCard" href="javascript:void(0)" onclick="handleLockedClick()">
+            <div class="contact-info">
+              <span class="contact-type">Месенджер Viber</span>
+              <span class="contact-value" id="viberText">Viber: •••••••••••</span>
+            </div>
+            <span class="contact-badge badge-locked" id="viberBadge">🔒 Заблоковано</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <section class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🚙</div>
+      <h3>Volkswagen Golf 5 Variant</h3>
+      <p>Культовий синій універсал. Плавний хід, чистий та просторий салон, великий багажник для сумок та кондиціонер.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📍</div>
+      <h3>Подача по Олевську</h3>
+      <p>Вчасне прибуття на залізничний вокзал, автостанцію, ринок, районну лікарню або в будь-який населений пункт громади.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤝</div>
+      <h3>Водій Борис</h3>
+      <p>Багаторічний досвід, спокійне та впевнене водіння без різких маневрів і чесний прозорий розрахунок перед виїздом.</p>
+    </div>
+  </section>
+
+  <!-- Секція орієнтовних тарифів по Олевську та району -->
+  <section class="pricing-section">
+    <div class="section-title-wrap">
+      <div class="section-badge">Прозорі ціни</div>
+      <h3 class="section-title">Орієнтовні тарифи та маршрути</h3>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- 1. По місту -->
+      <div class="price-card popular">
+        <div class="price-badge">Місто</div>
+        <div class="price-header">
+          <h4>По Олевську</h4>
+          <div class="price-value">від 90 <span>грн</span></div>
+        </div>
+        <ul class="price-routes">
+          <li>Залізничний вокзал — Центр</li>
+          <li>Ринок / Автостанція</li>
+          <li>Районна лікарня</li>
+          <li>Мікрорайони та околиці міста</li>
+        </ul>
+      </div>
+
+      <!-- 2. По громаді / Села -->
+      <div class="price-card">
+        <div class="price-badge" style="background:#0284c7;">Громада</div>
+        <div class="price-header">
+          <h4>Села громади</h4>
+          <div class="price-value">від 150 <span>грн (~20 грн/км)</span></div>
+        </div>
+        <ul class="price-routes">
+          <li>Варварівка, Тепениця</li>
+          <li>Радовель, Лопатичі</li>
+          <li>Сущани, Юрове, Корощине</li>
+          <li>Подача до вашого подвір'я</li>
+        </ul>
+      </div>
+
+      <!-- 3. Міжмісто -->
+      <div class="price-card">
+        <div class="price-badge" style="background:#4f46e5;">Міжмісто</div>
+        <div class="price-header">
+          <h4>Міжміські рейси</h4>
+          <div class="price-value">договірна <span>фіксована</span></div>
+        </div>
+        <ul class="price-routes">
+          <li>Олевськ — Коростень (~1 500 грн)</li>
+          <li>Олевськ — Сарни (~1 600 грн)</li>
+          <li>Олевськ — Звягель (~1 600 грн)</li>
+          <li>Олевськ — Житомир / Київ</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pricing-note">
+      💼 <strong>Бонус універсала:</strong> Перевезення стандартного багажу, сумок чи передач у багажнику на 505–1495 л — без доплат.
+    </div>
+  </section>
+
+  <!-- Модальне вікно розробника (ВИКЛЮЧНО EMAIL) -->
+  <div class="modal-backdrop" id="devModal" onclick="handleBackdropClick(event)">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeDevModal()">✕</button>
+      <h2>Замовити розробку сайту</h2>
+      <p>Створюємо швидкі та стильні сайти-візитки для приватних майстрів, таксі та бізнесу.</p>
+      
+      <!-- Тільки Email, жодних номерів чи телефонів -->
+      <div class="contact-row">
+        <div>
+          <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:3px; text-transform:uppercase; font-weight:700;">
+            Електронна пошта розробника:
+          </div>
+          <div class="contact-val" id="devEmailText">webdev.olewsk@gmail.com</div>
+        </div>
+        <button class="copy-pill" onclick="copyToClipboard('webdev.olewsk@gmail.com', 'Email розробника скопійовано!')">
+          Скопіювати
+        </button>
+      </div>
+
+      <button class="copy-pill" style="width: 100%; padding: 12px; font-size: 0.88rem; border-radius: 12px;" onclick="closeDevModal()">
+        Зрозуміло, дякую!
+      </button>
+    </div>
+  </div>
+
+  <!-- Тост повідомлення -->
+  <div class="toast-box" id="toastBox">Сповіщення</div>
+
+  <!-- Футер -->
+  <footer>
+    <p>© 2026 Таксі Борис. Олевськ. Всі права захищені.</p>
+    <p style="margin-top: 5px; font-size: 0.74rem; color: #64748b;">
+      Сайт-візитка розроблений під ключ • Для зв'язку з розробником пишіть на Email
+    </p>
+  </footer>
+
+  <script>
+    /* Сцена Three.js */
+    const canvas = document.getElementById('carCanvas');
+    const container = canvas.parentElement;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(38, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(4.6, 2.2, 4.6);
+    camera.lookAt(0, 0.45, 0);
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Освітлення
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+    scene.add(ambientLight);
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    mainLight.position.set(5, 10, 6);
+    scene.add(mainLight);
+
+    const blueLight = new THREE.DirectionalLight(0x38bdf8, 1.5);
+    blueLight.position.set(-6, 4, -5);
+    scene.add(blueLight);
+
+    const carGroup = new THREE.Group();
+
+    const carPaint = new THREE.MeshStandardMaterial({
+      color: 0x1d4ed8, // Синій колір Golf
+      roughness: 0.3,
+      metalness: 0.65
+    });
+
+    const carDarkTrim = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      roughness: 0.8
+    });
+
+    const carGlass = new THREE.MeshStandardMaterial({
+      color: 0x0b1329,
+      roughness: 0.1,
+      metalness: 0.85,
+      transparent: true,
+      opacity: 0.82
+    });
+
+    const chromeMat = new THREE.MeshStandardMaterial({
+      color: 0xd1d5db,
+      metalness: 0.95,
+      roughness: 0.15
+    });
+
+    // 1. Нижній кузов універсала Variant
+    const bodyGeo = new THREE.BoxGeometry(3.8, 0.68, 1.6);
+    const bodyMesh = new THREE.Mesh(bodyGeo, carPaint);
+    bodyMesh.position.set(0, 0.62, 0);
+    carGroup.add(bodyMesh);
+
+    // 2. Верхня кабіна
+    const cabinGeo = new THREE.BoxGeometry(2.35, 0.65, 1.38);
+    const cabinMesh = new THREE.Mesh(cabinGeo, carPaint);
+    cabinMesh.position.set(-0.25, 1.25, 0);
+    carGroup.add(cabinMesh);
+
+    // 3. Скління
+    const glassGeo = new THREE.BoxGeometry(2.25, 0.54, 1.4);
+    const glassMesh = new THREE.Mesh(glassGeo, carGlass);
+    glassMesh.position.set(-0.25, 1.26, 0);
+    carGroup.add(glassMesh);
+
+    // 4. Рейлінги на даху
+    const railGeo = new THREE.BoxGeometry(2.0, 0.05, 0.05);
+    const railLeft = new THREE.Mesh(railGeo, chromeMat);
+    railLeft.position.set(-0.25, 1.6, 0.56);
+    const railRight = railLeft.clone();
+    railRight.position.set(-0.25, 1.6, -0.56);
+    carGroup.add(railLeft, railRight);
+
+    // 5. Передня решітка
+    const grilleGeo = new THREE.BoxGeometry(0.08, 0.28, 0.7);
+    const grille = new THREE.Mesh(grilleGeo, carDarkTrim);
+    grille.position.set(1.9, 0.65, 0);
+    carGroup.add(grille);
+
+    // 6. Передні фари
+    const headlightGeo = new THREE.BoxGeometry(0.1, 0.18, 0.32);
+    const hlMat = new THREE.MeshBasicMaterial({ color: 0xf8fafc });
+    const hlL = new THREE.Mesh(headlightGeo, hlMat);
+    hlL.position.set(1.89, 0.68, 0.52);
+    const hlR = hlL.clone();
+    hlR.position.set(1.89, 0.68, -0.52);
+    carGroup.add(hlL, hlR);
+
+    // 7. Задні ліхтарі
+    const taillightGeo = new THREE.BoxGeometry(0.1, 0.22, 0.32);
+    const tlMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+    const tlL = new THREE.Mesh(taillightGeo, tlMat);
+    tlL.position.set(-1.9, 0.76, 0.52);
+    const tlR = tlL.clone();
+    tlR.position.set(-1.9, 0.76, -0.52);
+    carGroup.add(tlL, tlR);
+
+    // 8. Колеса
+    const wheelGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.24, 24);
+    wheelGeo.rotateX(Math.PI / 2);
+    const rimGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.26, 12);
+    rimGeo.rotateX(Math.PI / 2);
+    const tireMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 });
+
+    function createWheel(x, z) {
+      const g = new THREE.Group();
+      const tire = new THREE.Mesh(wheelGeo, tireMat);
+      const rim = new THREE.Mesh(rimGeo, chromeMat);
+      g.add(tire, rim);
+      g.position.set(x, 0.35, z);
+      return g;
+    }
+    carGroup.add(createWheel(1.1, 0.8));
+    carGroup.add(createWheel(-1.1, 0.8));
+    carGroup.add(createWheel(1.1, -0.8));
+    carGroup.add(createWheel(-1.1, -0.8));
+
+    // 9. Тінь під машиною
+    const shadowGeo = new THREE.PlaneGeometry(4.2, 2.2);
+    const shadowMat = new THREE.MeshBasicMaterial({
+      color: 0x030712,
+      transparent: true,
+      opacity: 0.65
+    });
+    const shadow = new THREE.Mesh(shadowGeo, shadowMat);
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.y = 0.01;
+    carGroup.add(shadow);
+
+    scene.add(carGroup);
+
+    // Плавний цикл обертання автомобіля
+    function animate() {
+      requestAnimationFrame(animate);
+      carGroup.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Ресайз вікна
+    window.addEventListener('resize', () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+
+    /* Керування режимом відпустки та секретною адмінкою */
+    let isVacation = localStorage.getItem('boris_vacation') !== 'false'; // За замовчуванням у відпустці
+    let adminClicks = 0;
+    let clickTimeout = null;
+
+    // Перевірка секретного входу в адмінку (через ?admin у URL або збережений ключ)
+    function initAdminMode() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasAdminParam = urlParams.has('admin') || window.location.hash.includes('admin');
+      const savedAdmin = localStorage.getItem('boris_admin_unlocked') === 'true';
+
+      if (hasAdminParam || savedAdmin) {
+        unlockAdminButton(false);
+      }
+      applyVacationState();
+    }
+
+    // Секретний тригер: 3 кліки по логотипу "ТАКСІ БОРИС" відкривають адмін-кнопку
+    function handleLogoSecretClick() {
+      adminClicks++;
+      clearTimeout(clickTimeout);
+      
+      if (adminClicks >= 3) {
+        unlockAdminButton(true);
+        adminClicks = 0;
+      } else {
+        clickTimeout = setTimeout(() => { adminClicks = 0; }, 1200);
+      }
+    }
+
+    function unlockAdminButton(showNotification = true) {
+      localStorage.setItem('boris_admin_unlocked', 'true');
+      const adminBtn = document.getElementById('toggleRibbonBtn');
+      if (adminBtn) {
+        adminBtn.classList.add('visible');
+      }
+      if (showNotification) {
+        showToast('🔓 Панель керування водія активована!');
+      }
+    }
+
+    function toggleVacationMode() {
+      isVacation = !isVacation;
+      localStorage.setItem('boris_vacation', isVacation ? 'true' : 'false');
+      applyVacationState();
+
+      if (isVacation) {
+        showToast('Режим відпустки увімкнено: контакти замасковані');
+      } else {
+        showToast('Борис на лінії! Контакти розблоковано для клієнтів');
+      }
+    }
+
+    function applyVacationState() {
+      const ribbon = document.getElementById('vacationRibbon');
+      const toggleIcon = document.getElementById('toggleRibbonIcon');
+      const toggleText = document.getElementById('toggleRibbonText');
+      const statusPill = document.getElementById('statusPill');
+      const statusPillText = document.getElementById('statusPillText');
+      const statusNotice = document.getElementById('statusNotice');
+      const contactsHeader = document.getElementById('contactsHeader');
+      
+      const phoneCard = document.getElementById('phoneCard');
+      const phoneText = document.getElementById('phoneText');
+      const phoneBadge = document.getElementById('phoneBadge');
+      
+      const viberCard = document.getElementById('viberCard');
+      const viberText = document.getElementById('viberText');
+      const viberBadge = document.getElementById('viberBadge');
+
+      if (!ribbon) return;
+
+      if (isVacation) {
+        // РЕЖИМ ВІДПУСТКИ: стрічка на передньому плані, контакти масковані
+        ribbon.classList.remove('hidden');
+        if (toggleIcon) toggleIcon.innerText = '⚙️';
+        if (toggleText) toggleText.innerText = 'Адмін: Вимкнути відпустку';
+        
+        statusPill.className = 'status-pill';
+        statusPillText.innerText = 'У відпустці';
+        
+        statusNotice.className = 'status-notice';
+        statusNotice.innerHTML = '🔒 Прийом замовлень призупинено на період відпустки водія';
+        contactsHeader.innerHTML = '<span>📋 Контакти водія (приховані на час відпустки):</span>';
+
+        // Блокуємо телефон
+        phoneCard.className = 'contact-card locked';
+        phoneCard.href = 'javascript:void(0)';
+        phoneCard.onclick = handleLockedClick;
+        phoneText.innerText = '+38 (097) •••-••-••';
+        phoneBadge.className = 'contact-badge badge-locked';
+        phoneBadge.innerText = '🔒 Заблоковано';
+
+        // Блокуємо Viber
+        viberCard.className = 'contact-card locked';
+        viberCard.href = 'javascript:void(0)';
+        viberCard.onclick = handleLockedClick;
+        viberText.innerText = 'Viber: •••••••••••';
+        viberBadge.className = 'contact-badge badge-locked';
+        viberBadge.innerText = '🔒 Заблоковано';
+      } else {
+        // РЕЖИМ ОНЛАЙН: стрічка ховається, контакти відкриваються
+        ribbon.classList.add('hidden');
+        if (toggleIcon) toggleIcon.innerText = '🌴';
+        if (toggleText) toggleText.innerText = 'Адмін: Увімкнути відпустку';
+
+        statusPill.className = 'status-pill online';
+        statusPillText.innerText = 'На лінії • Вільний';
+
+        statusNotice.className = 'status-notice active';
+        statusNotice.innerHTML = '✅ Водій приймає замовлення по місту та району!';
+        contactsHeader.innerHTML = '<span>📞 Прямий звʼязок для замовлення:</span>';
+
+        // Відкриваємо телефон
+        phoneCard.className = 'contact-card unlocked';
+        phoneCard.href = 'tel:+380970000000';
+        phoneCard.onclick = () => showToast('Здійснюємо дзвінок водію...');
+        phoneText.innerText = '+38 (097) 000-00-00';
+        phoneBadge.className = 'contact-badge badge-unlocked';
+        phoneBadge.innerText = '🟢 Зателефонувати';
+
+        // Відкриваємо Viber
+        viberCard.className = 'contact-card unlocked';
+        viberCard.href = 'viber://chat?number=%2B380970000000';
+        viberCard.onclick = () => showToast('Відкриваємо чат у Viber...');
+        viberText.innerText = 'Написати у Viber';
+        viberBadge.className = 'contact-badge badge-unlocked';
+        viberBadge.innerText = '💬 Відкрити';
+      }
+    }
+
+    // Запуск перевірки при завантаженні
+    initAdminMode();
+
+    function handleLockedClick() {
+      showToast('⚠️ Водій у відпустці: лінія та номер тимчасово приховані');
+    }
+
+    function openDevModal() {
+      document.getElementById('devModal').classList.add('active');
+    }
+    function closeDevModal() {
+      document.getElementById('devModal').classList.remove('active');
+    }
+    function handleBackdropClick(e) {
+      if (e.target.id === 'devModal') closeDevModal();
+    }
+
+    function copyToClipboard(text, successMsg) {
+      const temp = document.createElement('input');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast(successMsg || 'Скопійовано!');
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      box.innerText = msg;
+      box.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        box.classList.remove('show');
+      }, 2600);
+    }
+  </script>
+</body>
+</html>
