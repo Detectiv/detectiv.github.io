@@ -1172,10 +1172,11 @@
     <div class="modal-card">
       <button class="modal-close" onclick="closeAdminPinModal()">✕</button>
       <h2>Вхід для адміністратора</h2>
-      <p>Введіть секретний пароль водія для безпечного перемикання режиму в хмарі:</p>
+      <p>Введіть ваш Email та пароль водія для безпечного перемикання режиму в хмарі:</p>
       
-      <div class="pin-input-group">
-        <input type="password" id="adminPinInput" class="pin-input-field" placeholder="Введіть пароль" autocomplete="off" onkeydown="if(event.key==='Enter') verifyAdminPin()">
+      <div style="display: flex; flex-direction: column; gap: 10px; margin: 18px 0;">
+        <input type="email" id="adminEmailInput" class="pin-input-field" placeholder="Ваш Email у Firebase" autocomplete="email" style="font-size: 0.95rem; letter-spacing: normal;">
+        <input type="password" id="adminPinInput" class="pin-input-field" placeholder="Введіть пароль" autocomplete="current-password" onkeydown="if(event.key==='Enter') verifyAdminPin()">
       </div>
       <div class="pin-error-text" id="pinError">Помилка авторизації</div>
 
@@ -1508,10 +1509,20 @@
 
     function openAdminPinModal() {
       const modal = document.getElementById('adminPinModal');
+      const emailInput = document.getElementById('adminEmailInput');
       const input = document.getElementById('adminPinInput');
       const err = document.getElementById('pinError');
       const btn = document.getElementById('adminSubmitBtn');
+      
       if (err) err.style.display = 'none';
+      
+      // Автопідстановка збереженого Email
+      const savedEmail = localStorage.getItem('boris_admin_email') || '';
+      if (emailInput) {
+        emailInput.value = savedEmail;
+        emailInput.disabled = false;
+      }
+      
       if (input) {
         input.value = '';
         input.disabled = false;
@@ -1521,7 +1532,14 @@
         btn.disabled = false;
       }
       if (modal) modal.classList.add('active');
-      setTimeout(() => { if (input) input.focus(); }, 150);
+      
+      setTimeout(() => { 
+        if (emailInput && !savedEmail) {
+          emailInput.focus();
+        } else if (input) {
+          input.focus();
+        }
+      }, 150);
     }
 
     function closeAdminPinModal() {
@@ -1534,18 +1552,38 @@
     }
 
     function verifyAdminPin() {
+      const emailInput = document.getElementById('adminEmailInput');
       const input = document.getElementById('adminPinInput');
       const err = document.getElementById('pinError');
       const btn = document.getElementById('adminSubmitBtn');
-      if (!input || !input.value.trim()) return;
+      
+      const email = emailInput ? emailInput.value.trim() : '';
+      const password = input ? input.value.trim() : '';
 
-      const enteredPassword = input.value.trim();
+      if (!email) {
+        if (err) {
+          err.innerText = "Введіть Email вашого облікового запису Firebase";
+          err.style.display = 'block';
+        }
+        if (emailInput) emailInput.focus();
+        return;
+      }
+
+      if (!password) {
+        if (err) {
+          err.innerText = "Будь ласка, введіть пароль";
+          err.style.display = 'block';
+        }
+        if (input) input.focus();
+        return;
+      }
 
       if (window.cloudToggleVacationWithPassword) {
         if (btn) btn.innerText = 'Перевірка...';
+        if (emailInput) emailInput.disabled = true;
         input.disabled = true;
         btn.disabled = true;
-        window.cloudToggleVacationWithPassword(enteredPassword);
+        window.cloudToggleVacationWithPassword(email, password);
       } else {
         toggleVacationMode();
         closeAdminPinModal();
@@ -1677,14 +1715,16 @@
         });
 
         // Серверна авторизація виключно для адміністратора
-        window.cloudToggleVacationWithPassword = async function(password) {
+        window.cloudToggleVacationWithPassword = async function(email, password) {
           const err = document.getElementById('pinError');
+          const emailInput = document.getElementById('adminEmailInput');
           const input = document.getElementById('adminPinInput');
           const btn = document.getElementById('adminSubmitBtn');
 
           try {
-            // Вхід за поштою та паролем водія
-            await signInWithEmailAndPassword(auth, "admin@taxiboris.ua", password);
+            // Вхід за вказаною користувачем поштою та паролем
+            await signInWithEmailAndPassword(auth, email, password);
+            localStorage.setItem('boris_admin_email', email);
             
             const nextState = !isVacation;
             await setDoc(statusDocRef, { 
@@ -1703,7 +1743,7 @@
             if (error.code === 'auth/operation-not-allowed') {
               message = "⚠️ У Firebase вимкнено вхід по Email! Зайдіть у Console → Authentication → Sign-in method та увімкніть 'Email/Password'.";
             } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-              message = "⚠️ Користувача admin@taxiboris.ua не знайдено, або введено невірний пароль. Створіть його у вкладці Authentication → Users.";
+              message = `⚠️ Користувача ${email} не знайдено, або введено невірний пароль. Перевірте вкладку Authentication → Users.`;
             } else if (error.code === 'auth/wrong-password') {
               message = "🔑 Невірний пароль! Спробуйте ще раз.";
             } else if (error.code === 'permission-denied') {
@@ -1714,6 +1754,7 @@
               err.innerText = message;
               err.style.display = 'block';
             }
+            if (emailInput) emailInput.disabled = false;
             if (input) {
               input.disabled = false;
               input.select();
