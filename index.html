@@ -381,7 +381,6 @@
 
     .contacts-grid {
       display: grid;
-      /* min(100%, ...) захищає від вилазіння карток за межі екрана при гігантському тексті */
       grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
       gap: 12px;
     }
@@ -393,7 +392,7 @@
       border-radius: 14px;
       padding: 12px 16px;
       display: flex;
-      flex-wrap: wrap; /* Дозволяє бейджу перейти на новий рядок при сильному зумі */
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
@@ -537,7 +536,7 @@
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      word-break: break-word; /* Текст не рве блок */
+      word-break: break-word;
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
     .price-card:hover {
@@ -628,7 +627,7 @@
       border-radius: 20px;
       width: 100%;
       max-width: 440px;
-      max-height: 88vh; /* Якщо шрифт великий — модалка не зрізається, а скролиться */
+      max-height: 88vh;
       overflow-y: auto;
       padding: 28px 24px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.85);
@@ -702,7 +701,7 @@
       color: #080c16;
     }
 
-    /* Модальне вікно введення ПІН-коду адміна */
+    /* Модальне вікно введення пароля адміна */
     .pin-input-group {
       display: flex;
       gap: 8px;
@@ -725,10 +724,16 @@
       box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
     }
     .pin-error-text {
-      color: #f87171;
-      font-size: 0.78rem;
-      margin-bottom: 12px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      margin-bottom: 14px;
       display: none;
+      text-align: left;
     }
 
     /* Тост повідомлення */
@@ -987,7 +992,7 @@
       <div class="pin-input-group">
         <input type="password" id="adminPinInput" class="pin-input-field" placeholder="Введіть пароль" autocomplete="off" onkeydown="if(event.key==='Enter') verifyAdminPin()">
       </div>
-      <div class="pin-error-text" id="pinError">Невірний пароль. Доступ відхилено сервером.</div>
+      <div class="pin-error-text" id="pinError">Помилка авторизації</div>
 
       <div style="display: flex; gap: 10px;">
         <button class="copy-pill" style="flex: 1; padding: 12px; font-size: 0.88rem; border-radius: 12px; background: rgba(255,255,255,0.05); color: #94a3b8; border-color: rgba(255,255,255,0.1);" onclick="closeAdminPinModal()">
@@ -1166,11 +1171,10 @@
     });
 
     /* Керування режимом відпустки та секретною адмінкою */
-    let isVacation = localStorage.getItem('boris_vacation') !== 'false'; // За замовчуванням у відпустці
+    let isVacation = localStorage.getItem('boris_vacation') !== 'false';
     let adminClicks = 0;
     let clickTimeout = null;
 
-    // Перевірка секретного входу в адмінку (через ?admin у URL або збережений ключ)
     function initAdminMode() {
       const urlParams = new URLSearchParams(window.location.search);
       const hasAdminParam = urlParams.has('admin') || window.location.hash.includes('admin');
@@ -1182,7 +1186,6 @@
       applyVacationState();
     }
 
-    // Секретний тригер: 3 кліки по логотипу "ТАКСІ БОРИС" відкривають адмін-кнопку
     function handleLogoSecretClick() {
       adminClicks++;
       clearTimeout(clickTimeout);
@@ -1238,7 +1241,6 @@
       if (!ribbon) return;
 
       if (isVacation) {
-        // РЕЖИМ ВІДПУСТКИ: стрічка на передньому плані, контакти масковані
         ribbon.classList.remove('hidden');
         if (toggleIcon) toggleIcon.innerText = '⚙️';
         if (toggleText) toggleText.innerText = 'Адмін: Вимкнути відпустку';
@@ -1250,7 +1252,6 @@
         statusNotice.innerHTML = '🔒 Прийом замовлень призупинено на період відпустки водія';
         contactsHeader.innerHTML = '<span>📋 Контакти водія (приховані на час відпустки):</span>';
 
-        // Блокуємо телефон
         phoneCard.className = 'contact-card locked';
         phoneCard.href = 'javascript:void(0)';
         phoneCard.onclick = handleLockedClick;
@@ -1258,7 +1259,6 @@
         phoneBadge.className = 'contact-badge badge-locked';
         phoneBadge.innerText = '🔒 Заблоковано';
 
-        // Блокуємо Viber
         viberCard.className = 'contact-card locked';
         viberCard.href = 'javascript:void(0)';
         viberCard.onclick = handleLockedClick;
@@ -1266,7 +1266,6 @@
         viberBadge.className = 'contact-badge badge-locked';
         viberBadge.innerText = '🔒 Заблоковано';
       } else {
-        // РЕЖИМ ОНЛАЙН: стрічка ховається, контакти відкриваються
         ribbon.classList.add('hidden');
         if (toggleIcon) toggleIcon.innerText = '🌴';
         if (toggleText) toggleText.innerText = 'Адмін: Увімкнути відпустку';
@@ -1278,7 +1277,6 @@
         statusNotice.innerHTML = '✅ Водій приймає замовлення по місту та району!';
         contactsHeader.innerHTML = '<span>📞 Прямий звʼязок для замовлення:</span>';
 
-        // Відкриваємо телефон
         phoneCard.className = 'contact-card unlocked';
         phoneCard.href = 'tel:+380970000000';
         phoneCard.onclick = () => showToast('Здійснюємо дзвінок водію...');
@@ -1286,7 +1284,6 @@
         phoneBadge.className = 'contact-badge badge-unlocked';
         phoneBadge.innerText = '🟢 Зателефонувати';
 
-        // Відкриваємо Viber
         viberCard.className = 'contact-card unlocked';
         viberCard.href = 'viber://chat?number=%2B380970000000';
         viberCard.onclick = () => showToast('Відкриваємо чат у Viber...');
@@ -1296,7 +1293,6 @@
       }
     }
 
-    // Запуск перевірки при завантаженні
     initAdminMode();
 
     function handleLockedClick() {
@@ -1312,9 +1308,6 @@
     function handleBackdropClick(e) {
       if (e.target.id === 'devModal') closeDevModal();
     }
-
-    /* Модальне вікно ПІН-коду для перемикання статусу */
-    const ADMIN_SECRET_PIN = "7788"; // Стандартний ПІН-код
 
     function openAdminPinModal() {
       const modal = document.getElementById('adminPinModal');
@@ -1343,7 +1336,6 @@
       if (e.target.id === 'adminPinModal') closeAdminPinModal();
     }
 
-    // Більше жодних відкритих паролів у коді!
     function verifyAdminPin() {
       const input = document.getElementById('adminPinInput');
       const err = document.getElementById('pinError');
@@ -1363,7 +1355,6 @@
       }
     }
 
-    // Перевизначаємо клік по кнопці адміна, щоб викликати модалку
     document.getElementById('toggleRibbonBtn').onclick = function() {
       openAdminPinModal();
     };
@@ -1396,7 +1387,6 @@
     import { getAuth, signInAnonymously, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // Ідентифікатор проєкту та конфігурація
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'taxi-boris';
     
     const fallbackFirebaseConfig = {
@@ -1419,10 +1409,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Публічний шлях до документа статусу таксі
         const statusDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'taxi_settings', 'status_doc');
 
-        // 1. Усі клієнти миттєво слухають статус (без паролів та авторизацій)
+        // Читання статусу в реальному часі
         onSnapshot(statusDocRef, (docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data();
@@ -1435,17 +1424,16 @@
           console.warn("Слухач Firestore:", error);
         });
 
-        // 2. Серверна перевірка пароля: пароль відправляється по HTTPS напряму в Google Auth
+        // Серверна авторизація з детальною діагностикою помилок
         window.cloudToggleVacationWithPassword = async function(password) {
           const err = document.getElementById('pinError');
           const input = document.getElementById('adminPinInput');
           const btn = document.getElementById('adminSubmitBtn');
 
           try {
-            // Вхід під захищеним обліковим записом водія
+            // Спроба входу під акаунтом водія
             await signInWithEmailAndPassword(auth, "admin@taxiboris.ua", password);
             
-            // Якщо Google підтвердив пароль — база дозволяє оновити статус:
             const nextState = !isVacation;
             await setDoc(statusDocRef, { 
               isVacation: nextState,
@@ -1456,10 +1444,22 @@
             showToast(nextState 
               ? '🌴 Хмара: Режим відпустки увімкнено для всіх' 
               : '✅ Хмара: Борис на лінії! Номер відкрито для всіх');
-          } catch (authError) {
-            console.warn("Помилка авторизації Google:", authError.code);
+          } catch (error) {
+            console.error("Firebase error detail:", error);
+            let message = "Помилка доступу: " + (error.code || error.message);
+
+            if (error.code === 'auth/operation-not-allowed') {
+              message = "⚠️ У Firebase вимкнено вхід по Email! Зайдіть у Console → Authentication → Sign-in method та увімкніть 'Email/Password'.";
+            } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+              message = "⚠️ Користувача admin@taxiboris.ua не знайдено, або введено невірний пароль. Створіть його у вкладці Authentication → Users.";
+            } else if (error.code === 'auth/wrong-password') {
+              message = "🔑 Невірний пароль! Спробуйте ще раз.";
+            } else if (error.code === 'permission-denied') {
+              message = "🛡️ База даних заблокувала запис! Перевірте вкладку Firestore Database → Rules.";
+            }
+
             if (err) {
-              err.innerText = "Невірний пароль! Сервери Google відхилили доступ.";
+              err.innerText = message;
               err.style.display = 'block';
             }
             if (input) {
@@ -1473,7 +1473,6 @@
           }
         };
 
-        // За замовчуванням тримаємо анонімну сесію для відвідувачів
         signInAnonymously(auth).catch(() => {});
       } catch (e) {
         console.warn("Хмарний модуль працює в автономному режимі:", e);
