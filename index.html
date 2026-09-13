@@ -975,8 +975,8 @@
     <button onclick="openDevModal()">Замовити сайт у розробника →</button>
   </div>
 
-  <!-- 2. Діагональна анімована стрічка відпустки (pointer-events: none, скрол вільний) -->
-  <div class="vacation-ribbon-wrapper" id="vacationRibbon">
+  <!-- 2. Діагональна анімована стрічка відпустки (за замовчуванням прихована, щоб не миготіла) -->
+  <div class="vacation-ribbon-wrapper hidden" id="vacationRibbon">
     <div class="vacation-ribbon">
       <div class="ribbon-track">
         <span class="ribbon-item">🌴 БОРИС У ВІДПУСТЦІ</span>
@@ -999,8 +999,8 @@
 
   <!-- Кнопка адміна для перемикання режиму відпустки -->
   <button class="admin-pill-btn" id="toggleRibbonBtn" onclick="toggleVacationMode()">
-    <span id="toggleRibbonIcon">⚙️</span>
-    <span id="toggleRibbonText">Адмін: Вимкнути відпустку</span>
+    <span id="toggleRibbonIcon">🌴</span>
+    <span id="toggleRibbonText">Адмін: Увімкнути відпустку</span>
   </button>
 
   <!-- Шапка сайту (клік по логотипу 3 рази відкриває режим адміна) -->
@@ -1009,9 +1009,9 @@
       <span class="logo-text">ТАКСІ БОРИС</span>
       <span class="logo-badge">ОЛЕВСЬК</span>
     </div>
-    <div class="status-pill" id="statusPill">
+    <div class="status-pill online" id="statusPill">
       <span class="status-dot"></span>
-      <span id="statusPillText">У відпустці</span>
+      <span id="statusPillText">На лінії • Вільний</span>
     </div>
   </header>
 
@@ -1026,35 +1026,35 @@
       <div class="canvas-hint">✨ Синій Volkswagen Golf 5 Variant ✨</div>
     </div>
 
-    <!-- Блок контактів водія: показано, що контакти є, але на час відпустки заблоковані -->
+    <!-- Блок контактів водія: за замовчуванням відкритий і готовий до замовлення -->
     <div class="cta-container">
       
-      <div class="status-notice" id="statusNotice">
-        🔒 Прийом замовлень призупинено на період відпустки водія
+      <div class="status-notice active" id="statusNotice">
+        ✅ Водій приймає замовлення по місту та району!
       </div>
 
       <div class="contacts-wrapper">
         <div class="contacts-header" id="contactsHeader">
-          <span>📋 Контакти водія (приховані на час відпустки):</span>
+          <span>📞 Прямий звʼязок для замовлення:</span>
         </div>
 
         <div class="contacts-grid">
           <!-- Телефон (маскований або клікабельний) -->
-          <a class="contact-card locked" id="phoneCard" href="javascript:void(0)" onclick="handleLockedClick()">
+          <a class="contact-card unlocked" id="phoneCard" href="tel:+380970000000" onclick="showToast('Здійснюємо дзвінок водію...')">
             <div class="contact-info">
               <span class="contact-type">Мобільний телефон</span>
-              <span class="contact-value" id="phoneText">+38 (097) •••-••-••</span>
+              <span class="contact-value" id="phoneText">+38 (097) 000-00-00</span>
             </div>
-            <span class="contact-badge badge-locked" id="phoneBadge">🔒 Заблоковано</span>
+            <span class="contact-badge badge-unlocked" id="phoneBadge">🟢 Зателефонувати</span>
           </a>
 
           <!-- Viber (маскований або клікабельний) -->
-          <a class="contact-card locked" id="viberCard" href="javascript:void(0)" onclick="handleLockedClick()">
+          <a class="contact-card unlocked" id="viberCard" href="viber://chat?number=%2B380970000000" onclick="showToast('Відкриваємо чат у Viber...')">
             <div class="contact-info">
               <span class="contact-type">Месенджер Viber</span>
-              <span class="contact-value" id="viberText">Viber: •••••••••••</span>
+              <span class="contact-value" id="viberText">Написати у Viber</span>
             </div>
-            <span class="contact-badge badge-locked" id="viberBadge">🔒 Заблоковано</span>
+            <span class="contact-badge badge-unlocked" id="viberBadge">💬 Відкрити</span>
           </a>
         </div>
       </div>
@@ -1367,7 +1367,8 @@
     });
 
     /* Керування режимом відпустки та секретною адмінкою */
-    let isVacation = localStorage.getItem('boris_vacation') !== 'false';
+    // За замовчуванням таксі завжди працює (false), якщо у локальній пам'яті явно не збережено відпустку ('true')
+    let isVacation = localStorage.getItem('boris_vacation') === 'true';
     let adminClicks = 0;
     let clickTimeout = null;
 
@@ -1667,6 +1668,7 @@
             const data = docSnap.data();
             if (typeof data.isVacation === 'boolean') {
               isVacation = data.isVacation;
+              localStorage.setItem('boris_vacation', isVacation ? 'true' : 'false');
               applyVacationState();
             }
           }
