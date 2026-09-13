@@ -60,6 +60,11 @@
       margin: 0;
       padding: 0;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button, a {
+      touch-action: manipulation;
     }
 
     body {
@@ -932,15 +937,24 @@
         justify-content: center;
       }
       .car-tabs-bar {
-        justify-content: center;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         width: 100%;
-        overflow-x: auto;
+        gap: 4px;
+        padding: 3px;
+        overflow: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .car-tabs-bar::-webkit-scrollbar {
+        display: none;
       }
       .car-tab-btn {
-        padding: 6px 10px;
-        font-size: 0.74rem;
-        flex: 1;
+        padding: 6px 3px;
+        font-size: 0.71rem;
         justify-content: center;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
       .vacation-ribbon {
         padding: 8px 0;
@@ -1177,6 +1191,8 @@
           class="car-photo-img" 
           src="img/golf-front.jpg" 
           alt="Синій Volkswagen Golf 5 Variant таксі Борис Олевськ"
+          decoding="async"
+          fetchpriority="high"
           onerror="handleImgFallback(this)"
         >
 
@@ -1805,8 +1821,19 @@
       });
     }
 
-    window.addEventListener('scroll', handlePageScroll, { passive: true });
-    window.addEventListener('resize', handlePageScroll, { passive: true });
+    let isScrollingTick = false;
+    function onScrollOptimized() {
+      if (!isScrollingTick) {
+        window.requestAnimationFrame(() => {
+          handlePageScroll();
+          isScrollingTick = false;
+        });
+        isScrollingTick = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScrollOptimized, { passive: true });
+    window.addEventListener('resize', onScrollOptimized, { passive: true });
     setTimeout(handlePageScroll, 150);
 
     function copyToClipboard(text, successMsg) {
