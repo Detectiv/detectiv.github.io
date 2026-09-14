@@ -3,39 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Таксі Борис | Олевськ — Volkswagen Golf 5</title>
+  <title>Таксі в Олевську — Таксі Борис | Volkswagen Golf 5 Variant</title>
+  
+  <!-- Канонічна адреса для захисту від дублікатів у пошуковій видачі -->
+  <link rel="canonical" href="https://taxi-boris.online/">
+
+  <!-- Favicon: легкий SVG data-URI для всіх сучасних браузерів без зайвих файлів -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚖</text></svg>">
+
   <!-- Базові мета-теги для пошукових систем -->
-  <meta name="description" content="Швидке та надійне таксі в Олевську та районі. Комфортний універсал Volkswagen Golf 5 Variant, подача на вокзал, автостанцію, лікарню, села громади та міжмісто.">
+  <meta name="description" content="Швидке та комфортне таксі в Олевську та районі. Синій універсал Volkswagen Golf 5 Variant: вокзал, автостанція, лікарня, села громади та міжміські поїздки.">
   <meta name="keywords" content="таксі олевськ, такси олевск, таксі борис олевськ, замовити таксі олевськ, номер таксі олевськ, таксі олевськ ціни, таксі вокзал олевськ">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="geo.region" content="UA-18">
   <meta name="geo.placename" content="Олевськ">
 
   <!-- Open Graph для привабливих прев'ю при надсиланні у Viber, Telegram та Facebook -->
-  <meta property="og:title" content="Таксі Борис | Олевськ — Volkswagen Golf 5 Variant">
-  <meta property="og:description" content="Поїздки по Олевську та району. Великий багажник, чистий салон, помірні тарифи.">
+  <meta property="og:site_name" content="Таксі Борис — Олевськ">
+  <meta property="og:title" content="Таксі в Олевську — Таксі Борис | Golf 5 Variant">
+  <meta property="og:description" content="Швидка подача, просторий універсал з великим багажником, поїздки по місту, селах громади та міжмісто.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://taxi-boris.online/">
   <meta property="og:locale" content="uk_UA">
+  <meta property="og:image" content="https://taxi-boris.online/img/golf-front.jpg">
 
-  <!-- Мікророзмітка Schema.org TaxiService для Google Bot -->
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Таксі в Олевську — Таксі Борис">
+  <meta name="twitter:description" content="Поїздки по місту Олевськ, селах громади та міжміські рейси.">
+  <meta name="twitter:image" content="https://taxi-boris.online/img/golf-front.jpg">
+
+  <!-- Розширена мікророзмітка Schema.org TaxiService для показу багатих сніпетів у Google -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "TaxiService",
     "name": "Таксі Борис Олевськ",
-    "description": "Послуги комфортного таксі по місту Олевськ, селах Олевської громади та міжміські маршрути.",
+    "url": "https://taxi-boris.online/",
+    "telephone": "+380970000000",
+    "image": "https://taxi-boris.online/img/golf-front.jpg",
+    "description": "Послуги комфортного та пунктуального таксі по місту Олевськ, селах Олевської міської громади та міжміські перевезення.",
     "serviceType": "Таксі",
-    "areaServed": {
-      "@type": "City",
-      "name": "Олевськ",
-      "addressRegion": "Житомирська область",
-      "addressCountry": "UA"
-    },
+    "areaServed": [
+      {
+        "@type": "City",
+        "name": "Олевськ",
+        "addressRegion": "Житомирська область",
+        "addressCountry": "UA"
+      },
+      {
+        "@type": "AdministrativeArea",
+        "name": "Олевська міська громада"
+      }
+    ],
     "provider": {
       "@type": "Person",
       "name": "Борис"
     },
-    "priceRange": "від 90 грн"
+    "priceRange": "від 90 грн",
+    "offers": {
+      "@type": "Offer",
+      "price": "90",
+      "priceCurrency": "UAH",
+      "description": "Мінімальна вартість поїздки по місту Олевськ"
+    }
   }
   </script>
 
@@ -43,6 +74,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
+  <script>
+    // Гарантований фолбек зображень до повного завантаження DOM
+    function handleImgFallback(imgElement) {
+      imgElement.onerror = null;
+      imgElement.src = "https://placehold.co/1200x800/172554/60a5fa?text=Golf+5+Variant+%E2%80%A2+%D0%9F%D0%BE%D0%B4%D0%B0%D1%87%D0%B0+%D0%B0%D0%B2%D1%82%D0%BE";
+    }
+  </script>
+
   <style>
     :root {
       --bg: #090d16;
@@ -86,7 +125,7 @@
       font-size: 0.82rem;
       text-align: center;
       display: flex;
-      flex-wrap: wrap; /* Запобігає наїзду тексту на кнопку при 200% збільшенні */
+      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       gap: 12px;
@@ -110,14 +149,14 @@
       color: #090d16;
     }
 
-    /* 2. Апаратне прискорення стрічки відпустки (повністю усуває смикання при скролі) */
+    /* 2. Апаратне прискорення стрічки паузи / відпустки */
     .vacation-ribbon-wrapper {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      height: 100dvh; /* Враховує динамічну панель браузера */
+      height: 100dvh;
       pointer-events: none;
       z-index: 80;
       overflow: hidden;
@@ -181,7 +220,7 @@
       100% { transform: translate3d(-50%, 0, 0); }
     }
 
-    /* Адаптивний та гармонійний хедер */
+    /* Шапка сайту */
     header {
       padding: 14px 20px;
       display: flex;
@@ -253,7 +292,7 @@
       box-shadow: 0 0 8px #22c55e;
     }
 
-    /* Адмін-перемикач відпустки в кутку (прихований за замовчуванням від звичайних клієнтів) */
+    /* Адмін-перемикач режиму */
     .admin-pill-btn {
       position: fixed;
       bottom: 18px;
@@ -268,7 +307,7 @@
       padding: 8px 16px;
       border-radius: 24px;
       cursor: pointer;
-      display: none; /* Приховано від випадкових відвідувачів */
+      display: none;
       align-items: center;
       gap: 8px;
       transition: all 0.2s ease;
@@ -288,6 +327,7 @@
       transform: translateY(-2px);
     }
 
+    /* Головний блок (Hero) */
     .hero {
       max-width: 1200px;
       margin: 0 auto;
@@ -306,10 +346,10 @@
       margin-bottom: 8px;
     }
     .hero h1 {
-      font-size: clamp(1.9rem, 4.5vw, 3.2rem);
+      font-size: clamp(1.85rem, 4.3vw, 3.1rem);
       font-weight: 900;
       margin-bottom: 10px;
-      line-height: 1.18;
+      line-height: 1.2;
     }
     .hero h1 span {
       background: linear-gradient(135deg, #60a5fa, #38bdf8);
@@ -323,7 +363,7 @@
       margin: 0 auto 20px;
     }
 
-    /* Оновлена кінематографічна вітрина: фото повністю відкрите, кнопки та опис знизу */
+    /* Вітрина авто */
     .car-showcase-card {
       position: relative;
       width: 100%;
@@ -340,7 +380,6 @@
       flex-direction: column;
     }
 
-    /* Контейнер фото з пропорцією 16:9 для повного огляду автомобіля разом із колесами */
     .car-photo-viewport {
       position: relative;
       width: 100%;
@@ -360,7 +399,6 @@
       display: block;
     }
 
-    /* М'яка віньєтка по краях без затемнення коліс та низу авто */
     .car-photo-overlay {
       position: absolute;
       inset: 0;
@@ -370,7 +408,6 @@
         linear-gradient(to bottom, rgba(9, 13, 22, 0.45) 0%, transparent 20%);
     }
 
-    /* Акуратний бейдж у лівому верхньому кутку */
     .car-badge-verified {
       position: absolute;
       top: 14px;
@@ -398,7 +435,6 @@
       box-shadow: 0 0 8px #38bdf8;
     }
 
-    /* Окрема нижня панель під фото — нічого не перекриває автомобіль */
     .car-details-bar {
       padding: 16px 20px 18px;
       background: rgba(11, 16, 28, 0.95);
@@ -411,7 +447,6 @@
       position: relative;
     }
 
-    /* Тонка лінія прогресу автослайдера над нижньою панеллю */
     .slide-progress-track {
       position: absolute;
       top: -2px;
@@ -481,6 +516,7 @@
       box-shadow: 0 2px 10px rgba(37, 99, 235, 0.45);
     }
 
+    /* Блок контактів */
     .cta-container {
       margin-top: 30px;
       display: flex;
@@ -506,7 +542,6 @@
       color: #86efac;
     }
 
-    /* Контейнер контактів водія */
     .contacts-wrapper {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
@@ -534,7 +569,6 @@
       gap: 12px;
     }
 
-    /* Картка контакту: маскована або активна */
     .contact-card {
       background: rgba(30, 41, 59, 0.55);
       border: 1px solid var(--card-border);
@@ -606,6 +640,7 @@
       border: 1px solid rgba(34, 197, 94, 0.35);
     }
 
+    /* Переваги */
     .features {
       max-width: 1100px;
       margin: 25px auto 60px;
@@ -644,7 +679,7 @@
       line-height: 1.55;
     }
 
-    /* Секція тарифів та цін по Олевську */
+    /* Тарифи */
     .pricing-section {
       max-width: 1100px;
       margin: 10px auto 60px;
@@ -745,13 +780,8 @@
       color: #38bdf8;
       font-weight: 900;
     }
-    .pricing-note {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
 
+    /* Модальні вікна */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -789,24 +819,28 @@
     }
     .modal-close {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      top: 14px;
+      right: 14px;
       background: rgba(255, 255, 255, 0.08);
-      border: none;
-      color: #94a3b8;
-      width: 32px;
-      height: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #cbd5e1;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      font-size: 1.1rem;
+      font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
+      z-index: 10;
     }
     .modal-close:hover {
-      background: #ef4444;
-      color: #fff;
+      background: rgba(239, 68, 68, 0.25);
+      border-color: rgba(239, 68, 68, 0.6);
+      color: #ffffff;
+      transform: scale(1.06);
     }
     .modal-card h2 {
       font-size: 1.35rem;
@@ -818,31 +852,110 @@
       font-size: 0.88rem;
       margin-bottom: 20px;
     }
-    .contact-row {
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px 16px;
+
+    .dev-contact-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+    .dev-contact-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
     }
-    .contact-val {
-      font-family: monospace;
+    .dev-contact-label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .dev-contact-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+    .dev-email-display {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 0.95rem;
       font-weight: 700;
+      color: #f8fafc;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 14px;
+      border-radius: 10px;
+      user-select: all;
+      word-break: break-all;
+    }
+    .dev-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .dev-action-btn-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #ffffff;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 0.86rem;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .dev-action-btn-primary:hover {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      transform: translateY(-1px);
+    }
+    .dev-action-btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #cbd5e1;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .dev-action-btn-secondary:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
       color: #38bdf8;
     }
+
     .copy-pill {
       background: rgba(56, 189, 248, 0.2);
       border: 1px solid rgba(56, 189, 248, 0.4);
       color: #38bdf8;
-      padding: 5px 12px;
+      padding: 6px 12px;
       border-radius: 16px;
       font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       transition: all 0.2s ease;
     }
     .copy-pill:hover {
@@ -850,22 +963,14 @@
       color: #080c16;
     }
 
-    /* Модальне вікно введення пароля адміна */
-    .pin-input-group {
-      display: flex;
-      gap: 8px;
-      margin: 18px 0;
-    }
     .pin-input-field {
-      flex: 1;
+      width: 100%;
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid rgba(56, 189, 248, 0.4);
       color: #f8fafc;
       padding: 12px;
       border-radius: 12px;
-      font-size: 1.05rem;
-      text-align: center;
-      letter-spacing: 2px;
+      font-size: 0.95rem;
       outline: none;
     }
     .pin-input-field:focus {
@@ -885,7 +990,6 @@
       text-align: left;
     }
 
-    /* Тост повідомлення */
     .toast-box {
       position: fixed;
       bottom: 24px;
@@ -920,68 +1024,6 @@
       z-index: 50;
     }
 
-    @media (max-width: 768px) {
-      .car-photo-viewport {
-        aspect-ratio: 16 / 10;
-      }
-      .car-details-bar {
-        padding: 14px 14px 16px;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-      }
-      .car-caption-text {
-        text-align: center;
-      }
-      .car-caption-title {
-        justify-content: center;
-      }
-      .car-tabs-bar {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        width: 100%;
-        gap: 4px;
-        padding: 3px;
-        overflow: hidden;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-      .car-tabs-bar::-webkit-scrollbar {
-        display: none;
-      }
-      .car-tab-btn {
-        padding: 6px 3px;
-        font-size: 0.71rem;
-        justify-content: center;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-      .vacation-ribbon {
-        padding: 8px 0;
-      }
-      .ribbon-item {
-        font-size: 0.92rem;
-      }
-      header {
-        padding: 10px 14px;
-        gap: 8px;
-      }
-      .logo {
-        font-size: 1.02rem;
-        gap: 6px;
-      }
-      .logo-badge {
-        font-size: 0.68rem;
-        padding: 2px 6px;
-      }
-      .status-pill {
-        padding: 4px 10px;
-        font-size: 0.74rem;
-        gap: 6px;
-      }
-    }
-
-    /* Тонка неонова смужка прогресу скролу на самому верху */
     .scroll-progress-bar {
       position: fixed;
       top: 0;
@@ -995,7 +1037,6 @@
       pointer-events: none;
     }
 
-    /* Вертикальні крапки навігації по блоках праворуч */
     .section-nav-dots {
       position: fixed;
       right: 12px;
@@ -1057,7 +1098,6 @@
       transform: translateY(-50%) translateX(0);
     }
 
-    /* Підказка швидкого переходу до тарифів під контактами */
     .scroll-down-hint {
       display: inline-flex;
       align-items: center;
@@ -1093,23 +1133,76 @@
     }
 
     @media (max-width: 768px) {
+      .car-photo-viewport {
+        aspect-ratio: 16 / 10;
+      }
+      .car-details-bar {
+        padding: 14px 14px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .car-caption-text {
+        text-align: center;
+      }
+      .car-caption-title {
+        justify-content: center;
+      }
+      .car-tabs-bar {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        width: 100%;
+        gap: 4px;
+        padding: 3px;
+        overflow: hidden;
+      }
+      .car-tab-btn {
+        padding: 6px 3px;
+        font-size: 0.71rem;
+        justify-content: center;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .vacation-ribbon {
+        padding: 8px 0;
+      }
+      .ribbon-item {
+        font-size: 0.92rem;
+      }
+      header {
+        padding: 10px 14px;
+        gap: 8px;
+      }
+      .logo {
+        font-size: 1.02rem;
+        gap: 6px;
+      }
+      .logo-badge {
+        font-size: 0.68rem;
+        padding: 2px 6px;
+      }
+      .status-pill {
+        padding: 4px 10px;
+        font-size: 0.74rem;
+        gap: 6px;
+      }
       .section-nav-dots {
         right: 8px;
         padding: 6px 3.5px;
         gap: 8px;
       }
       .nav-dot .dot-tooltip {
-        display: none; /* Приховуємо на смартфонах, щоб не перекривати екран */
+        display: none;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Індикатор прогресу скролу (тонка лінія зверху) -->
+  <!-- Індикатор прогресу скролу -->
   <div class="scroll-progress-bar" id="scrollProgressBar"></div>
 
-  <!-- Вертикальні смарт-крапки навігації праворуч -->
+  <!-- Вертикальні смарт-крапки навігації -->
   <nav class="section-nav-dots" aria-label="Розділи сайту">
     <button class="nav-dot active" id="dot-hero" onclick="scrollToSection(event, 'hero')" aria-label="Авто та контакти">
       <span class="dot-tooltip">🚗 Авто & Контакти</span>
@@ -1124,11 +1217,11 @@
 
   <!-- 1. Верхній промо-бар розробника -->
   <div class="dev-banner">
-    <span>✨ Потрібен якісний сайт для вашої справи?</span>
+    <span>✨ Потрібен швидкий та сучасний сайт для вашої справи?</span>
     <button onclick="openDevModal()">Замовити сайт у розробника →</button>
   </div>
 
-  <!-- 2. Діагональна анімована стрічка відпустки (за замовчуванням прихована, щоб не миготіла) -->
+  <!-- 2. Діагональна анімована стрічка відпустки / паузи -->
   <div class="vacation-ribbon-wrapper hidden" id="vacationRibbon">
     <div class="vacation-ribbon">
       <div class="ribbon-track">
@@ -1150,13 +1243,13 @@
     </div>
   </div>
 
-  <!-- Кнопка адміна для перемикання режиму відпустки -->
-  <button class="admin-pill-btn" id="toggleRibbonBtn" onclick="toggleVacationMode()">
+  <!-- Кнопка адміна для перемикання режиму -->
+  <button class="admin-pill-btn" id="toggleRibbonBtn" onclick="toggleVacationMode()" aria-label="Панель керування статусом водія">
     <span id="toggleRibbonIcon">🌴</span>
     <span id="toggleRibbonText">Адмін: Увімкнути відпустку</span>
   </button>
 
-  <!-- Шапка сайту (клік по логотипу 3 рази відкриває режим адміна) -->
+  <!-- Шапка сайту (трикратний клік по логотипу відмикає панель) -->
   <header>
     <div class="logo" onclick="handleLogoSecretClick()" title="Клацніть тричі для панелі керування">
       <span class="logo-text">ТАКСІ БОРИС</span>
@@ -1169,38 +1262,33 @@
   </header>
 
   <main class="hero" id="hero">
-    <div class="hero-tag">Міські та міжміські поїздки</div>
-    <h1>Комфортний <span>Golf 5 Variant</span></h1>
-    <p>Швидко, надійно та з чистим салоном по всьому Олевську та району.</p>
+    <!-- Фокусний гео-заголовок для прямого влучання в ТОП-1 за запитом «Олевськ таксі» -->
+    <div class="hero-tag">Швидка подача авто • Олевськ та район</div>
+    <h1>Таксі в Олевську — <span>Golf 5 Variant</span></h1>
+    <p>Швидка та надійна подача автомобіля з чистим салоном по Олевську та всій громаді.</p>
 
-    <!-- Кінематографічна вітрина реального авто водія -->
+    <!-- Вітрина реального авто водія -->
     <div class="car-showcase-card">
       
-      <!-- Вікно показу авто: 100% вільне від нагромаджень тексту -->
       <div class="car-photo-viewport">
-        
-        <!-- Бейдж у кутку -->
         <div class="car-badge-verified">
           <span class="car-badge-dot"></span>
           <span id="photoBadgeLabel">Подача на виклик • Олевськ</span>
         </div>
 
-        <!-- Головне фото автомобіля з папки img/ -->
         <img 
           id="carDisplayImg" 
           class="car-photo-img" 
           src="img/golf-front.jpg" 
-          alt="Синій Volkswagen Golf 5 Variant таксі Борис Олевськ"
+          alt="Таксі в Олевську Volkswagen Golf 5 Variant водій Борис"
           decoding="async"
           fetchpriority="high"
           onerror="handleImgFallback(this)"
         >
 
-        <!-- М'яка кінематографічна віньєтка -->
         <div class="car-photo-overlay"></div>
       </div>
 
-      <!-- Нижня плашка: опис і кнопки винесені ПІД фотографію -->
       <div class="car-details-bar">
         <div class="slide-progress-track">
           <div class="slide-progress-fill" id="slideProgressFill"></div>
@@ -1215,7 +1303,6 @@
           </div>
         </div>
 
-        <!-- Перемикач життєвих сценаріїв -->
         <div class="car-tabs-bar" role="tablist">
           <button class="car-tab-btn active" onclick="switchCarPhoto(0)" id="tab-0">
             <span>🚖 Подача</span>
@@ -1231,7 +1318,7 @@
 
     </div>
 
-    <!-- Блок контактів водія: за замовчуванням відкритий і готовий до замовлення -->
+    <!-- Блок контактів водія -->
     <div class="cta-container">
       
       <div class="status-notice active" id="statusNotice">
@@ -1244,7 +1331,6 @@
         </div>
 
         <div class="contacts-grid">
-          <!-- Телефон (маскований або клікабельний) -->
           <a class="contact-card unlocked" id="phoneCard" href="tel:+380970000000" onclick="showToast('Здійснюємо дзвінок водію...')">
             <div class="contact-info">
               <span class="contact-type">Мобільний телефон</span>
@@ -1253,7 +1339,6 @@
             <span class="contact-badge badge-unlocked" id="phoneBadge">🟢 Зателефонувати</span>
           </a>
 
-          <!-- Viber (маскований або клікабельний) -->
           <a class="contact-card unlocked" id="viberCard" href="viber://chat?number=%2B380970000000" onclick="showToast('Відкриваємо чат у Viber...')">
             <div class="contact-info">
               <span class="contact-type">Месенджер Viber</span>
@@ -1264,7 +1349,6 @@
         </div>
       </div>
 
-      <!-- Підказка переходу до тарифів, що ліквідує ілюзію порожнього низу -->
       <a class="scroll-down-hint" href="#pricing" onclick="scrollToSection(event, 'pricing')">
         <span>Орієнтовні тарифи та села</span>
         <span class="scroll-arrow">↓</span>
@@ -1277,7 +1361,7 @@
     <div class="feature-card">
       <div class="feature-icon">🚙</div>
       <h3>Volkswagen Golf 5 Variant</h3>
-      <p>Культовий синій універсал. Плавний хід, чистий та просторий салон, великий багажник для сумок та кондиціонер.</p>
+      <p>Культовий синій універсал. Плавний хід, чистий та просторий салон, великий багажник для сумок та справний кондиціонер.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">📍</div>
@@ -1291,7 +1375,7 @@
     </div>
   </section>
 
-  <!-- Секція орієнтовних тарифів по Олевську та району -->
+  <!-- Секція орієнтовних тарифів -->
   <section class="pricing-section" id="pricing">
     <div class="section-title-wrap">
       <div class="section-badge">Прозорі ціни</div>
@@ -1299,7 +1383,6 @@
     </div>
 
     <div class="pricing-grid">
-      <!-- 1. По місту -->
       <div class="price-card">
         <div class="price-badge">Місто</div>
         <div class="price-header">
@@ -1314,7 +1397,6 @@
         </ul>
       </div>
 
-      <!-- 2. По громаді / Села -->
       <div class="price-card">
         <div class="price-badge">Громада</div>
         <div class="price-header">
@@ -1325,11 +1407,10 @@
           <li>Варварівка, Тепениця</li>
           <li>Радовель, Лопатичі</li>
           <li>Сущани, Юрове, Корощине</li>
-          <li>Подача до вашого подвір'я</li>
+          <li>Подача безпосередньо до подвірʼя</li>
         </ul>
       </div>
 
-      <!-- 3. Міжмісто -->
       <div class="price-card">
         <div class="price-badge">Міжмісто</div>
         <div class="price-header">
@@ -1346,33 +1427,44 @@
     </div>
   </section>
 
-  <!-- Модальне вікно розробника (ВИКЛЮЧНО EMAIL) -->
+  <!-- Модальне вікно розробника -->
   <div class="modal-backdrop" id="devModal" onclick="handleBackdropClick(event)">
     <div class="modal-card">
-      <button class="modal-close" onclick="closeDevModal()">✕</button>
+      <button class="modal-close" onclick="closeDevModal()" aria-label="Закрити вікно" title="Закрити">✕</button>
       <h2>Замовити розробку сайту</h2>
-      <p>Створюємо швидкі та стильні сайти-візитки для приватних майстрів, таксі та бізнесу.</p>
+      <p>Створюємо швидкі та сучасні сайти для вашої справи, послуг або бізнесу.</p>
       
-      <!-- Тільки Email, жодних номерів чи телефонів -->
-      <div class="contact-row">
-        <div>
-          <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:3px; text-transform:uppercase; font-weight:700;">
-            Електронна пошта розробника:
-          </div>
-          <div class="contact-val" id="devEmailText">webdev.olevsk@proton.me</div>
+      <div class="dev-contact-card">
+        <div class="dev-contact-header">
+          <span class="dev-contact-label">Пошта для звʼязку:</span>
+          <span class="dev-contact-badge">Email</span>
         </div>
-        <button class="copy-pill" onclick="copyToClipboard('webdev.olewsk@gmail.com', 'Email розробника скопійовано!')">
-          Скопіювати
-        </button>
-      </div>
+        
+        <div class="dev-email-display" title="Виділіть або скопіюйте адресу">
+          webdev.olevsk@gmail.com
+        </div>
 
-      <button class="copy-pill" style="width: 100%; padding: 12px; font-size: 0.88rem; border-radius: 12px;" onclick="closeDevModal()">
-        Зрозуміло, дякую!
-      </button>
+        <div class="dev-actions-grid">
+          <a 
+            href="mailto:webdev.olevsk@gmail.com?subject=Замовлення%20сайту" 
+            class="dev-action-btn-primary"
+            onclick="showToast('Відкриваємо поштовий клієнт...')"
+          >
+            ✉️ Написати
+          </a>
+          <button 
+            type="button" 
+            class="dev-action-btn-secondary"
+            onclick="copyToClipboard('webdev.olevsk@gmail.com', 'Email розробника скопійовано!')"
+          >
+            📋 Скопіювати
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Модальне вікно входу в адмінку з ПІН-кодом -->
+  <!-- Модальне вікно входу в адмінку -->
   <div class="modal-backdrop" id="adminPinModal" onclick="handlePinBackdrop(event)">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAdminPinModal()">✕</button>
@@ -1380,7 +1472,7 @@
       <p>Введіть ваш Email та пароль водія для безпечного перемикання режиму в хмарі:</p>
       
       <div style="display: flex; flex-direction: column; gap: 10px; margin: 18px 0;">
-        <input type="email" id="adminEmailInput" class="pin-input-field" placeholder="Ваш Email у Firebase" autocomplete="email" style="font-size: 0.95rem; letter-spacing: normal;">
+        <input type="email" id="adminEmailInput" class="pin-input-field" placeholder="Ваш Email у Firebase" autocomplete="email">
         <input type="password" id="adminPinInput" class="pin-input-field" placeholder="Введіть пароль" autocomplete="current-password" onkeydown="if(event.key==='Enter') verifyAdminPin()">
       </div>
       <div class="pin-error-text" id="pinError">Помилка авторизації</div>
@@ -1408,11 +1500,9 @@
   </footer>
 
   <script>
-    /* Номери телефонів водія для виклику та Viber */
     const DRIVER_PHONE_RAW = "+380970000000";
     const DRIVER_PHONE_FORMATTED = "+38 (097) 000-00-00";
 
-    /* Пасажирські ситуації таксі Бориса */
     const CAR_PHOTOS = [
       {
         badge: "Подача на виклик • Олевськ",
@@ -1437,14 +1527,16 @@
       }
     ];
 
-    /* Сканування фотографій безпосередньо в папці img/ та корені */
     const PATH_CANDIDATES = ['img/', './img/', '', 'images/'];
     let detectedPrefix = null;
 
     function applyCarImage(imgElement, filename, fallbackUrl) {
       if (detectedPrefix !== null) {
         imgElement.src = detectedPrefix + filename;
-        imgElement.onerror = () => { imgElement.src = fallbackUrl; };
+        imgElement.onerror = () => {
+          imgElement.onerror = null;
+          imgElement.src = fallbackUrl;
+        };
         return;
       }
 
@@ -1456,28 +1548,32 @@
           const tester = new Image();
           tester.onload = () => {
             detectedPrefix = prefix;
+            imgElement.onerror = () => {
+              imgElement.onerror = null;
+              imgElement.src = fallbackUrl;
+            };
             imgElement.src = candidateSrc;
           };
           tester.onerror = tryNextCandidate;
           tester.src = candidateSrc;
         } else {
+          imgElement.onerror = null;
           imgElement.src = fallbackUrl;
         }
       }
       tryNextCandidate();
     }
 
-    function handleImgFallback(imgElement) {
-      if (!detectedPrefix) {
-        applyCarImage(imgElement, CAR_PHOTOS[currentPhotoIdx].file, CAR_PHOTOS[currentPhotoIdx].fallback);
-      }
-    }
+    window.handleImgFallback = function(imgElement) {
+      imgElement.onerror = null;
+      applyCarImage(imgElement, CAR_PHOTOS[currentPhotoIdx].file, CAR_PHOTOS[currentPhotoIdx].fallback);
+    };
 
     let currentPhotoIdx = 0;
     let autoSlideTimer = null;
     let progressTimer = null;
     let progressVal = 0;
-    const SLIDE_DURATION = 5500; // 5.5 секунд на кадр
+    const SLIDE_DURATION = 5500;
 
     function switchCarPhoto(index, isUserClick = true) {
       const img = document.getElementById('carDisplayImg');
@@ -1511,7 +1607,6 @@
       });
     }
 
-    /* Індикатор прогресу між слайдами */
     function startProgressBar() {
       const bar = document.getElementById('slideProgressFill');
       if (!bar) return;
@@ -1545,7 +1640,6 @@
 
     startAutoSlide();
 
-    /* Керування режимом відпустки та секретною адмінкою */
     let isVacation = localStorage.getItem('boris_vacation') === 'true';
     let adminClicks = 0;
     let clickTimeout = null;
@@ -1693,7 +1787,6 @@
       
       if (err) err.style.display = 'none';
       
-      // Автопідстановка збереженого Email
       const savedEmail = localStorage.getItem('boris_admin_email') || '';
       if (emailInput) {
         emailInput.value = savedEmail;
@@ -1771,7 +1864,6 @@
       openAdminPinModal();
     };
 
-    /* Плавний скрол до блоку та відстеження активного розділу */
     function scrollToSection(e, targetId) {
       if (e) e.preventDefault();
       const target = document.getElementById(targetId);
@@ -1791,13 +1883,11 @@
       const totalScrollable = document.documentElement.scrollHeight - window.innerHeight;
       const progressPercent = totalScrollable > 0 ? (scrollY / totalScrollable) * 100 : 0;
 
-      // Оновлення неонової лінії вгорі
       const progressBar = document.getElementById('scrollProgressBar');
       if (progressBar) {
         progressBar.style.width = Math.min(100, Math.max(0, progressPercent)) + '%';
       }
 
-      // Визначення поточного видимого блоку (тригер на 38% висоти вікна)
       const triggerY = scrollY + window.innerHeight * 0.38;
       let currentSectionId = navSections[0].id;
 
@@ -1808,7 +1898,6 @@
         }
       });
 
-      // Перемикання капсул-крапок
       navSections.forEach(sec => {
         const dot = document.getElementById(sec.dotId);
         if (dot) {
@@ -1858,7 +1947,7 @@
     }
   </script>
 
-  <!-- Модуль хмарної синхронізації Firebase Firestore в реальному часі -->
+  <!-- Хмарний модуль Firebase Firestore -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -1888,7 +1977,6 @@
 
         const statusDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'taxi_settings', 'status_doc');
 
-        // Читання статусу в реальному часі без жодної авторизації відвідувачів
         onSnapshot(statusDocRef, (docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data();
@@ -1902,7 +1990,6 @@
           console.warn("Слухач Firestore:", error);
         });
 
-        // Серверна авторизація виключно для адміністратора
         window.cloudToggleVacationWithPassword = async function(email, password) {
           const err = document.getElementById('pinError');
           const emailInput = document.getElementById('adminEmailInput');
@@ -1910,7 +1997,6 @@
           const btn = document.getElementById('adminSubmitBtn');
 
           try {
-            // Вхід за вказаною користувачем поштою та паролем
             await signInWithEmailAndPassword(auth, email, password);
             localStorage.setItem('boris_admin_email', email);
             
