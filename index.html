@@ -8,7 +8,7 @@
   <!-- Канонічна адреса для захисту від дублікатів у пошуковій видачі -->
   <link rel="canonical" href="https://taxi-boris.online/">
 
-  <!-- Favicon: легкий SVG data-URI для всіх сучасних браузерів без зайвих файлів -->
+  <!-- Favicon: легкий SVG data-URI без зайвих файлів на сервері -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚖</text></svg>">
 
   <!-- Базові мета-теги для пошукових систем -->
@@ -33,7 +33,10 @@
   <meta name="twitter:description" content="Поїздки по місту Олевськ, селах громади та міжміські рейси.">
   <meta name="twitter:image" content="https://taxi-boris.online/img/golf-front.webp">
 
-  <!-- Розширена мікророзмітка Schema.org TaxiService для показу багатих сніпетів у Google -->
+  <!-- Швидка попередня ініціалізація головного фото WebP -->
+  <link rel="preload" as="image" href="img/golf-front.webp" type="image/webp">
+
+  <!-- Розширена мікророзмітка Schema.org TaxiService для Google -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -245,9 +248,6 @@
       user-select: none;
       flex-shrink: 0;
     }
-    .logo-text {
-      letter-spacing: -0.3px;
-    }
     .logo-badge {
       background: rgba(37, 99, 235, 0.2);
       border: 1px solid rgba(56, 189, 248, 0.4);
@@ -395,8 +395,9 @@
       object-fit: cover;
       object-position: center 50%;
       filter: contrast(1.08) saturate(1.12);
-      transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.2, 0, 0.2, 1);
+      transition: opacity 0.22s ease, transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
       display: block;
+      will-change: opacity, transform;
     }
 
     .car-photo-overlay {
@@ -785,7 +786,7 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.82);
       backdrop-filter: blur(8px);
       z-index: 2000;
       display: flex;
@@ -1503,6 +1504,7 @@
     const DRIVER_PHONE_RAW = "+380970000000";
     const DRIVER_PHONE_FORMATTED = "+38 (097) 000-00-00";
 
+    // Оновлений масив фотографій у форматі WebP
     const CAR_PHOTOS = [
       {
         badge: "Подача на виклик • Олевськ",
@@ -1529,39 +1531,54 @@
 
     const PATH_CANDIDATES = ['img/', './img/', '', 'images/'];
     let detectedPrefix = null;
+    const preloadedImageCache = {};
 
-    function applyCarImage(imgElement, filename, fallbackUrl) {
-      if (detectedPrefix !== null) {
-        imgElement.src = detectedPrefix + filename;
-        imgElement.onerror = () => {
-          imgElement.onerror = null;
-          imgElement.src = fallbackUrl;
-        };
-        return;
-      }
-
+    // ⚡ Двигун миттєвої передзагрузки WebP-зображень у пам'ять
+    function initPreloadEngine() {
+      // 1. Спочатку визначаємо робочий префікс папки
       let step = 0;
-      function tryNextCandidate() {
+      function testPrefix() {
         if (step < PATH_CANDIDATES.length) {
           const prefix = PATH_CANDIDATES[step++];
-          const candidateSrc = prefix + filename;
-          const tester = new Image();
-          tester.onload = () => {
+          const testImg = new Image();
+          testImg.onload = () => {
             detectedPrefix = prefix;
-            imgElement.onerror = () => {
-              imgElement.onerror = null;
-              imgElement.src = fallbackUrl;
-            };
-            imgElement.src = candidateSrc;
+            // Як тільки префікс визначено — миттєво закачуємо ВСІ інші фото в оперативну пам'ять
+            preloadAllGalleryImages();
           };
-          tester.onerror = tryNextCandidate;
-          tester.src = candidateSrc;
+          testImg.onerror = testPrefix;
+          testImg.src = prefix + CAR_PHOTOS[0].file;
         } else {
-          imgElement.onerror = null;
-          imgElement.src = fallbackUrl;
+          detectedPrefix = 'img/';
+          preloadAllGalleryImages();
         }
       }
-      tryNextCandidate();
+      testPrefix();
+    }
+
+    function preloadAllGalleryImages() {
+      CAR_PHOTOS.forEach(item => {
+        const fullSrc = detectedPrefix + item.file;
+        if (!preloadedImageCache[fullSrc]) {
+          const cacheObj = new Image();
+          cacheObj.src = fullSrc;
+          preloadedImageCache[fullSrc] = cacheObj;
+        }
+      });
+    }
+
+    // Запуск предзагрузки відразу після відкриття DOM
+    initPreloadEngine();
+
+    function applyCarImage(imgElement, filename, fallbackUrl) {
+      const targetSrc = (detectedPrefix !== null ? detectedPrefix : 'img/') + filename;
+      
+      // Якщо фото вже лежить у кеші пам'яті — беремо його миттєво без затримок
+      imgElement.src = targetSrc;
+      imgElement.onerror = () => {
+        imgElement.onerror = null;
+        imgElement.src = fallbackUrl;
+      };
     }
 
     window.handleImgFallback = function(imgElement) {
@@ -1585,6 +1602,7 @@
       currentPhotoIdx = index;
       if (isUserClick) resetAutoSlide();
 
+      // Швидка, плавна зміна без білих спалахів
       img.style.opacity = '0.35';
       img.style.transform = 'scale(0.99)';
 
@@ -1596,7 +1614,7 @@
         if (desc) desc.innerText = item.desc;
         img.style.opacity = '1';
         img.style.transform = 'scale(1)';
-      }, 120);
+      }, 70);
 
       [0, 1, 2].forEach(i => {
         const btn = document.getElementById(`tab-${i}`);
